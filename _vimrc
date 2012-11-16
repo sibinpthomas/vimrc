@@ -151,6 +151,7 @@ autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt setl tw=0 
+autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
 autocmd BufEnter *.py nmap g<F5> :MakeDebugPy<CR>
@@ -177,6 +178,7 @@ command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makepr
 command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Werror\ -o\ %<\ % | :make!
 command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -ansi\ -Wall\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
 command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
+command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
@@ -207,6 +209,50 @@ if has("cscope") && executable("cscope")
     set csverb
 endif
 noh
+
+
+
+""" Compile *.tex file to generate *.pdf
+function! CompileLatexFile(filename_root)
+    if filereadable(a:filename_root . ".dvi")
+        exe delete(a:filename_root . ".dvi")
+    endif
+    if filereadable(a:filename_root . ".ps")
+        exe delete(a:filename_root . ".ps")
+    endif
+    if filereadable(a:filename_root . ".pdf")
+        exe delete(a:filename_root . ".pdf")
+    endif
+
+    echo a:filename_root." is the name of the file."
+    set makeprg=latex\ -halt-on-error\ -c-style-errors\ -interaction=nonstopmode\ -quiet\ %
+    set efm=%A%f:%l:%m
+    make!
+
+    if filereadable(a:filename_root . ".dvi")
+        silent exe "!dvips " . a:filename_root
+    else
+        echo "Error generating " . a:filename_root . ".dvi file. \n'latex' command failed"
+        vert topleft cwin
+        vert resize 50
+        return
+    endif
+
+    if filereadable(a:filename_root . ".ps")
+        silent exe "!ps2pdf " . a:filename_root . ".ps"
+    else
+        echo "Error generating " . a:filename_root . ".ps file. \n'dvips' command failed."
+        return
+    endif
+
+    if filereadable(a:filename_root . ".pdf")
+        silent exe "!" . a:filename_root . ".pdf"
+    else
+        echo "Error generating " . a:filename_root . ".pdf file. \n'ps2pdf' command failed."
+        return
+    endif
+endfunc
+
 
 " smap <C-f> <C-g>:call RegCopy()<CR>
 " xmap <C-f> :call RegCopy()<CR>
