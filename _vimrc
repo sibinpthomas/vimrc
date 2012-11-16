@@ -119,6 +119,7 @@ cabbr tcs tabnew \| :cs find 7
 
 " saves time for me
 iabbr pri printf("");
+iabbr hte the
 
 nmap zz o<Esc>
 nmap vim :so $VIM\_vimrc<CR>
