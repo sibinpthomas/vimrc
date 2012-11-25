@@ -21,8 +21,8 @@ call pathogen#infect('$VIM\pathogen_bundles')
 " Make Pathogen run :helptags on every doc/directory in your 'runtimepath'.
 Helptags
 
-amenu ToolBar.Compile <F5><CR>
-amenu ToolBar.WeakCompile w<F5><CR>
+amenu icon=$VIM/Compile.bmp ToolBar.Compile <F5><CR>
+amenu icon=$VIM/WeakCompile.bmp ToolBar.WeakCompile w<F5><CR>
 nmap gF c :tabe <cfile><CR>
 nmap gh :vimgrep <cword> ./**/*.h<CR>
 nmap 1gh :vimgrep <cword> ../**/*.h<CR>
