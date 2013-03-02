@@ -15,11 +15,89 @@ se nofoldenable
 se foldmethod=syntax
 se foldcolumn=3
 se cmdheight=1
-" Runtime Path Manipulation using Pathogen.
-" http://www.vim.org/scripts/script.php?script_id=2332
-call pathogen#infect('$VIM\pathogen_bundles')
-" Make Pathogen run :helptags on every doc/directory in your 'runtimepath'.
-Helptags
+se clipboard=unnamed
+
+
+" Setting up Vundle - The Vim Plugin Bundler
+" Based on -
+"   https://github.com/fisadev/fisa-vim-config/blob/master/.vimrc
+let vundleAlreadyExists=1
+let vundle_readme=expand('$VIM\bundle\vundle\README.md')
+if !filereadable(vundle_readme)
+    echo "Installing Vundle..."
+    echo ""
+    if isdirectory(expand('$VIM\bundle')) == 0
+        call mkdir(expand('$VIM\bundle'), 'p')
+    endif
+    execute 'silent !git clone https://github.com/gmarik/vundle "' . expand('$VIM\bundle\vundle') . '"'
+    let vundleAlreadyExists=0
+endif
+
+" Setting runtimepath for Vundle use
+set rtp+=$VIM\bundle\vundle\
+call vundle#rc('$VIM\bundle')
+
+" let Vundle manage Vundle
+" required!
+Bundle 'gmarik/vundle'
+
+" Bundles from GitHub repos:
+
+" CCTree
+Bundle 'vim-scripts/CCTree'
+
+" Gundo
+Bundle 'vim-scripts/Gundo'
+
+" Jedi-Vim
+Bundle 'davidhalter/jedi-vim'
+
+" Mark
+Bundle 'vim-scripts/Mark--Karkat'
+
+" Multisearch
+Bundle 'vim-scripts/multisearch.vim'
+
+" Nerdtree
+Bundle 'scrooloose/nerdtree'
+
+" Python-Mode
+Bundle 'klen/python-mode'
+
+" Source-Explorer
+Bundle 'vim-scripts/Source-Explorer-srcexpl.vim'
+
+" Taglist
+Bundle 'vim-scripts/taglist.vim'
+
+" Trinity
+Bundle 'vim-scripts/trinity.vim'
+
+" Fugitive
+Bundle 'tpope/vim-fugitive'
+
+" Markdown
+Bundle 'tpope/vim-markdown'
+
+" Markdown Preview
+Bundle 'swaroopch/vim-markdown-preview'
+
+" Vis
+Bundle 'vim-scripts/vis'
+
+" VisIncr
+Bundle 'vim-scripts/VisIncr'
+
+" Vissort
+Bundle 'yaroot/vissort'
+
+" Installing plugins the first time
+if vundleAlreadyExists == 0
+    echo "Installing Bundles, please ignore key map error messages"
+    echo ""
+    execute 'BundleInstall'
+endif
+
 
 amenu icon=$VIM/Compile.bmp ToolBar.Compile <F5><CR>
 amenu icon=$VIM/WeakCompile.bmp ToolBar.WeakCompile w<F5><CR>
@@ -142,8 +220,6 @@ autocmd!
 autocmd GUIEnter * :simalt ~x
 autocmd BufEnter *.86S se filetype=asm
 autocmd BufEnter *.armS se filetype=asm
-"autocmd BufLeave *.86S w
-"autocmd BufLeave *.armS w
 autocmd BufEnter * syntax keyword Type api_result_e API_RESULT API_SUCCESS API_FAILURE API_ON API_OFF API_TRUE API_FALSE
 autocmd BufEnter * syntax keyword Type DECL_REGISTER DECL_CONST DECL_STATIC
 autocmd BufEnter * syntax keyword Type CHAR INT8 UCHAR UINT8 INT16 UINT16 INT32 UINT32 INT64 UINT64 BOOLEAN
@@ -156,6 +232,7 @@ autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
 autocmd BufEnter *.py nmap g<F5> :MakeDebugPy<CR>
 autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
+autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
 autocmd BufEnter *.c nmap <F5> :Makexec<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 autocmd BufEnter *.c :retab
@@ -167,21 +244,22 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | di
 command CSC :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -b -R" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command -nargs=? Make :w | :se makeprg=make | :make! <args>
-command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Werror\ -o\ %<.o\ % | :make!
+command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<.o\ % | :make!
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c" | :tabe %:p:r.prepro.c
 command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S %" | :tabe %:p:r.86S
 command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:r.armS
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
-command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
-command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Werror\ -o\ %<\ *.c | :make!
+command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments\ <args> | :make!
+command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments\ <args> | :make!
+command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
-command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Werror\ -o\ %<\ % | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -ansi\ -Wall\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
+command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ % | :make!
+command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
 command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
+command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
 source $VIMRUNTIME/vimrc_example.vim
 "source $VIMRUNTIME/autotag.vim
