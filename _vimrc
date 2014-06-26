@@ -79,13 +79,13 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
 
 " Source-Explorer
-Bundle 'vim-scripts/Source-Explorer-srcexpl.vim'
+Bundle 'vim-scripts/SrcExpl'
 
 " Taglist
 Bundle 'vim-scripts/taglist.vim'
 
 " Trinity
-Bundle 'vim-scripts/trinity.vim'
+Bundle 'vim-scripts/Trinity'
 
 " Fugitive
 Bundle 'tpope/vim-fugitive'
@@ -224,12 +224,6 @@ iabbr hte the
 nmap zz o<Esc>
 nmap vim :so $VIM\_vimrc<CR>
 nmap ovim :tabe $VIM\_vimrc<CR>
-nmap a<F5> :Makexecall<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-nmap w<F5> :Makexecweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-nmap wa<F5> :Makexecallweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-nmap <S-F5> :MakexecCPP<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-nmap g<F5> :MakexecDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-nmap gw<F5> :MakexecweakDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 
 
 autocmd!
@@ -253,8 +247,14 @@ autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
 autocmd BufEnter *.c nmap <F5> :Makexec<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap a<F5> :Makexecall<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap w<F5> :Makexecweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
+autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 autocmd BufEnter *.cpp :retab
 au FileType gitcommit setl spell
 au FileType gitcommit setl tw=0
