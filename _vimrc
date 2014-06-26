@@ -11,8 +11,9 @@ se wm=0
 se ai
 se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat
 se nobackup writebackup
-se directory=$VIM\vim_backup
-se backupdir=$VIM\vim_backup
+let s:vim_cstmztn_files_dir='E:\Vim_Files\'
+let &directory=s:vim_cstmztn_files_dir.'vim_backup'
+let &backupdir=s:vim_cstmztn_files_dir.'vim_backup'
 se nofoldenable
 se foldmethod=syntax
 se foldcolumn=3
@@ -35,20 +36,20 @@ endif
 " Based on -
 "   https://github.com/fisadev/fisa-vim-config/blob/master/.vimrc
 let vundleAlreadyExists=1
-let vundle_readme=expand('$VIM\bundle\vundle\README.md')
+let vundle_readme=expand(s:vim_cstmztn_files_dir.'bundle\vundle\README.md')
 if !filereadable(vundle_readme)
     echo "Installing Vundle..."
     echo ""
-    if isdirectory(expand('$VIM\bundle')) == 0
-        call mkdir(expand('$VIM\bundle'), 'p')
+    if isdirectory(expand(s:vim_cstmztn_files_dir.'bundle')) == 0
+        call mkdir(expand(s:vim_cstmztn_files_dir.'bundle'), 'p')
     endif
-    execute 'silent !git clone https://github.com/gmarik/vundle "' . expand('$VIM\bundle\vundle') . '"'
+    execute 'silent !git clone https://github.com/gmarik/vundle "' . expand(s:vim_cstmztn_files_dir.'bundle\vundle') . '"'
     let vundleAlreadyExists=0
 endif
 
 " Setting runtimepath for Vundle use
-set rtp+=$VIM\bundle\vundle\
-call vundle#rc('$VIM\bundle')
+let &rtp.=','.s:vim_cstmztn_files_dir.'bundle\vundle\'
+call vundle#rc(expand(s:vim_cstmztn_files_dir.'bundle'))
 
 " let Vundle manage Vundle
 " required!
@@ -106,6 +107,11 @@ Bundle 'yaroot/vissort'
 
 " PlantUML Syntax
 Bundle 'aklt/plantuml-syntax'
+
+" Files which are necessary for my workflow such as -
+"        - Man pages
+"        - OS abstraction layer files
+Bundle 'sibinpthomas/vim_personal_xtra'
 
 " Installing plugins the first time
 if vundleAlreadyExists == 0
@@ -253,7 +259,7 @@ autocmd BufEnter *.cpp :retab
 au FileType gitcommit setl spell
 au FileType gitcommit setl tw=0
 
-command -nargs=1 Man :tabe G:\man_pages\man3\<args>.3
+command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command CSC :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -b -R" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
@@ -262,13 +268,15 @@ command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ 
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c" | :tabe %:p:r.prepro.c
 command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S %" | :tabe %:p:r.86S
 command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:r.armS
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments\ <args> | :make!
-command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments\ <args> | :make!
+
+let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir.' <args>' | :make!
+command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir.' <args> | :make!
+command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir | :make!
+command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir | :make!
 command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
 command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ % | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
-command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :MarkdownPreview
@@ -291,12 +299,12 @@ if has("cscope") && executable("cscope")
     " add any database in current directory
     if filereadable("cscope.out")
         cs add cscope.out
-        so $VIM\pathogen_bundles\CCTree\plugin\cctree.vim
+        exe 'so '.s:vim_cstmztn_files_dir.'bundle\CCTree\ftplugin\cctree.vim'
         silent CCTreeLoadDB cscope.out
         " else add database pointed to by environment
     elseif $CSCOPE_DB != ""
         cs add $CSCOPE_DB
-        so $VIM\pathogen_bundles\CCTree\plugin\cctree.vim
+        exe 'so '.s:vim_cstmztn_files_dir.'bundle\CCTree\ftplugin\cctree.vim'
         silent CCTreeLoadDB $CSCOPE_DB
     endif
     set csverb
