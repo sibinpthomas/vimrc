@@ -2,6 +2,8 @@ set nocompatible
 set exrc
 set autoread
 se tw=80
+se colorcolumn=+1
+hi ColorColumn ctermbg=lightgrey guibg=lightgrey
 se ts=4
 se sw=4
 se et
@@ -16,7 +18,18 @@ se foldmethod=syntax
 se foldcolumn=3
 se cmdheight=1
 se clipboard=unnamed
-
+if has('gui_running')
+    se guifont=Courier_New:h12:cANSI
+endif    
+if has("multi_byte")
+  if &termencoding == ""
+    let &termencoding = &encoding
+  endif
+  set encoding=utf-8
+  setglobal fileencoding=utf-8
+  "setglobal bomb
+  set fileencodings=ucs-bom,utf-8,latin1
+endif
 
 " Setting up Vundle - The Vim Plugin Bundler
 " Based on -
@@ -90,6 +103,9 @@ Bundle 'vim-scripts/VisIncr'
 
 " Vissort
 Bundle 'yaroot/vissort'
+
+" PlantUML Syntax
+Bundle 'aklt/plantuml-syntax'
 
 " Installing plugins the first time
 if vundleAlreadyExists == 0
@@ -202,8 +218,6 @@ iabbr hte the
 nmap zz o<Esc>
 nmap vim :so $VIM\_vimrc<CR>
 nmap ovim :tabe $VIM\_vimrc<CR>
-nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
-nmap <F5> :Makexec<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 nmap a<F5> :Makexecall<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 nmap w<F5> :Makexecweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 nmap wa<F5> :Makexecallweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
@@ -213,10 +227,6 @@ nmap gw<F5> :MakexecweakDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("
 
 
 autocmd!
-" Uding DoxTitleHdr/Src now
-""autocmd BufNewFile  *.c :keepalt 0r E:\Utilities backup\EDU\UWB\Templates\c_template.c
-"autocmd BufNewFile  *.h :keepalt 0r E:\Utilities backup\EDU\UWB\Templates\header_template.h 
-"autocmd BufEnter * cd %:p:h
 autocmd GUIEnter * :simalt ~x
 autocmd BufEnter *.86S se filetype=asm
 autocmd BufEnter *.armS se filetype=asm
@@ -227,6 +237,8 @@ autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt setl tw=0 
+autocmd BufEnter *.pu nmap <F5> :w<CR> :make<CR> :!%:p:r.png<CR>
+autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
@@ -238,6 +250,8 @@ autocmd BufEnter *.c nmap <F5> :Makexec<CR> :if findfile( expand("%:p:r").".exe"
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
 autocmd BufEnter *.cpp :retab
+au FileType gitcommit setl spell
+au FileType gitcommit setl tw=0
 
 command -nargs=1 Man :tabe G:\man_pages\man3\<args>.3
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
@@ -257,6 +271,7 @@ command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=
 command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -g\ -o\ %<\ %\ E:\experiments\BT_os.c\ -IE:\experiments | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
+command -nargs=? MakeMarkdown :w | :MarkdownPreview
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
