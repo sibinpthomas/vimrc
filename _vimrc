@@ -268,6 +268,7 @@ command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ 
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c" | :tabe %:p:r.prepro.c
 command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S %" | :tabe %:p:r.86S
 command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:r.armS
+command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
 
 let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
 command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir.' <args>' | :make!
