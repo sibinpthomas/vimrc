@@ -271,10 +271,10 @@ command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
 
 let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir.' <args>' | :make!
-command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir | :make!
-command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % '.s:osal_files_dir.'BT_os.c -I'.s:osal_files_dir | :make!
+command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -o %< % -I'.s:osal_files_dir.' <args>' | :make!
+command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:osal_files_dir.' <args>' | :make!
+command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -o %< % -I'.s:osal_files_dir | :make!
+command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:osal_files_dir | :make!
 command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
 command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ % | :make!
