@@ -93,6 +93,10 @@ Bundle 'tpope/vim-fugitive'
 " Markdown
 Bundle 'tpope/vim-markdown'
 
+" Abolish
+" To handle variants (case and lexical) of a word
+Bundle 'tpope/vim-abolish'
+
 " Markdown Preview
 Bundle 'swaroopch/vim-markdown-preview'
 
@@ -237,7 +241,7 @@ autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt setl tw=0 
-autocmd BufEnter *.pu nmap <F5> :w<CR> :make<CR> :!%:p:r.png<CR>
+autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR> :!%:p:r.png<CR>
 autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
@@ -256,34 +260,38 @@ autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
 autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
 autocmd BufEnter *.cpp :retab
-au FileType gitcommit setl spell
-au FileType gitcommit setl tw=0
+autocmd BufEnter COMMIT_EDITMSG setl spell
+autocmd BufEnter COMMIT_EDITMSG setl tw=0
 
 command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command CSC :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -b -R" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command -nargs=? Make :w | :se makeprg=make | :make! <args>
-command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<.o\ % | :make!
+command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<.o\ % | :make!
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c" | :tabe %:p:r.prepro.c
-command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S %" | :tabe %:p:r.86S
+command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:osal_files_dir | :tabe %:p:r.86S
 command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:r.armS
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
 
 let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -o %< % -I'.s:osal_files_dir.' <args>' | :make!
+command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:osal_files_dir.' <args>' | :make!
 command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:osal_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -o %< % -I'.s:osal_files_dir | :make!
+command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:osal_files_dir | :make!
 command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:osal_files_dir | :make!
-command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -o\ %<\ *.c | :make!
+command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
-command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -o\ %<\ % | :make!
+command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ % | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :MarkdownPreview
+command -nargs=? MakePlantUML :w | :!plantuml.jar %
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
+
+let pl_os_abstraction=s:osal_files_dir.'os_abstraction.h'
+nmap opl :exe 'tabe '.pl_os_abstraction<CR>
 
 source $VIMRUNTIME/vimrc_example.vim
 "source $VIMRUNTIME/autotag.vim
@@ -307,8 +315,12 @@ if has("cscope") && executable("cscope")
         cs add $CSCOPE_DB
         exe 'so '.s:vim_cstmztn_files_dir.'bundle\CCTree\ftplugin\cctree.vim'
         silent CCTreeLoadDB $CSCOPE_DB
+    else
+        autocmd BufEnter * silent! lcd %:p:h
     endif
     set csverb
+else
+    autocmd BufEnter * silent! lcd %:p:h
 endif
 noh
 
@@ -534,6 +546,56 @@ endfunction
 "nmap com ^:if search('\/\*.*\*\/','c',line("."))!=0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
 
 
+" Jump to the next or previous line that has the same level or a lower
+" level of indentation than the current line.
+"
+" From - http://vim.wikia.com/wiki/Move_to_next/previous_line_with_same_indentation
+"
+" exclusive (bool): true: Motion is exclusive
+" false: Motion is inclusive
+" fwd (bool): true: Go to next line
+" false: Go to previous line
+" lowerlevel (bool): true: Go to line with lower indentation level
+" false: Go to line with the same indentation level
+" skipblanks (bool): true: Skip blank lines
+" false: Don't skip blank lines
+function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
+  let line = line('.')
+  let column = col('.')
+  let lastline = line('$')
+  let indent = indent(line)
+  let stepvalue = a:fwd ? 1 : -1
+  while (line > 0 && line <= lastline)
+    let line = line + stepvalue
+    if ( ! a:lowerlevel && indent(line) == indent ||
+          \ a:lowerlevel && indent(line) < indent)
+      if (! a:skipblanks || strlen(getline(line)) > 0)
+        if (a:exclusive)
+          let line = line - stepvalue
+        endif
+        exe line
+        exe "normal " column . "|"
+        return
+      endif
+    endif
+  endwhile
+endfunction
+
+" Moving back and forth between lines of same or lower indentation.
+nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
+nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
+vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
+vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
+vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
+vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
+onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
+onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
+
+
 "****** C syntax file controls ******
 """ allow C++ style comments
 let c_cpp_comments = 1 
@@ -560,6 +622,3 @@ let g:load_doxygen_syntax=0
 """ Toggle indent highlighting with
 """   ToggleBlockHL
 """ --End Tip
-
-
-" replace hex %s/\%x2a/<>/g
