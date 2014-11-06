@@ -241,24 +241,78 @@ autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt setl tw=0 
-autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR> :!%:p:r.png<CR>
 autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
+autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
+                               \:if findfile( expand("%:p:r").".png", expand("%:p:h") )!=""<CR> 
+                               \    :!%:p:r.png<CR> 
+                               \:else<CR> 
+                               \    :for line in readfile(expand("%:p"))<CR>
+                               \        :let mlist = matchlist(line, '@startuml \([^ \t\r\n]*.png\)')<CR>
+                               \        :if len(mlist) > 1<CR>
+                               \            :silent exe "!".mlist[1]<CR>
+                               \            :break<CR>
+                               \        :endif<CR>
+                               \    :endfor<CR>
+                               \:endif<CR>
+                               " Remove 'break' to view all the generated images.
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
 autocmd BufEnter *.py nmap g<F5> :MakeDebugPy<CR>
 autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
-autocmd BufEnter *.c nmap <F5> :Makexec<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-autocmd BufEnter *.c nmap a<F5> :Makexecall<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-autocmd BufEnter *.c nmap w<F5> :Makexecweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
-autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!gdb %:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.c nmap <F5> :Makexec<CR> 
+                              \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                              \    :!%:p:r.exe<CR>
+                              \:else<CR>
+                              \    :vert topleft cwin<CR>
+                              \    :vert resize 50<CR>
+                              \:endif<CR> 
+autocmd BufEnter *.c nmap a<F5> :Makexecall<CR> 
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \    :!%:p:r.exe<CR>
+                               \:else<CR>
+                               \    :vert topleft cwin<CR>
+                               \    :vert resize 50<CR>
+                               \:endif<CR> 
+autocmd BufEnter *.c nmap w<F5> :Makexecweak<CR> 
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \    :!%:p:r.exe<CR>
+                               \:else<CR>
+                               \    :vert topleft cwin<CR>
+                               \    :vert resize 50<CR>
+                               \:endif<CR> 
+autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR> 
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                \    :!%:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
+autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> 
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \    :!gdb %:p:r.exe<CR>
+                               \:else<CR>
+                               \    :vert topleft cwin<CR>
+                               \    :vert resize 50<CR>
+                               \:endif<CR> 
+autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                \    :!gdb %:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
-autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> :if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR> :!%:p:r.exe<CR> :else<CR> :vert topleft cwin<CR> :vert resize 50<CR> :endif<CR> 
+autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> 
+                                  \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                  \    :!%:p:r.exe<CR>
+                                  \:else<CR>
+                                  \    :vert topleft cwin<CR>
+                                  \    :vert resize 50<CR>
+                                  \:endif<CR> 
 autocmd BufEnter *.cpp :retab
 autocmd BufEnter COMMIT_EDITMSG setl spell
 autocmd BufEnter COMMIT_EDITMSG setl tw=0
@@ -285,7 +339,7 @@ command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g+
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :MarkdownPreview
-command -nargs=? MakePlantUML :w | :!plantuml.jar %
+command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
@@ -543,7 +597,7 @@ function! Toggle_comment_func() range
     noh 
 endfunction
 "erstwhile toggle_comment
-"nmap com ^:if search('\/\*.*\*\/','c',line("."))!=0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
+"nmap com :if search('\/\*.*\*\/','c',line("."))!=0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
 
 
 " Jump to the next or previous line that has the same level or a lower
