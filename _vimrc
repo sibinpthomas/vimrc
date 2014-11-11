@@ -323,17 +323,19 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | di
 command CSC :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -b -R" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command -nargs=? Make :w | :se makeprg=make | :make! <args>
-command Makecompile :w | :se makeprg=gcc\ -c\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<.o\ % | :make!
-command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c" | :tabe %:p:r.prepro.c
-command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:osal_files_dir | :tabe %:p:r.86S
-command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S %" | :tabe %:p:r.armS
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
 
-let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:osal_files_dir.' <args>' | :make!
-command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:osal_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:osal_files_dir | :make!
-command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:osal_files_dir | :make!
+" Platform Abstraction Header files location
+let s:pl_abs_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+
+command Makecompile :w | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
+command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
+command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:pl_abs_files_dir | :tabe %:p:r.86S
+command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:pl_abs_files_dir | :tabe %:p:r.armS
+command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
+command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
 command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
 command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ % | :make!
@@ -345,7 +347,7 @@ command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
-let pl_os_abstraction=s:osal_files_dir.'os_abstraction.h'
+let pl_os_abstraction=s:pl_abs_files_dir.'os_abstraction.h'
 nmap opl :exe 'tabe '.pl_os_abstraction<CR>
 
 source $VIMRUNTIME/vimrc_example.vim
