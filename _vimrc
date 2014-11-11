@@ -255,6 +255,7 @@ autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
                                \        :endif<CR>
                                \    :endfor<CR>
                                \:endif<CR>
+                               \:redraw<CR>
                                " Remove 'break' to view all the generated images.
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
