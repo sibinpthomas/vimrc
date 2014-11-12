@@ -245,7 +245,7 @@ autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
                                \:if findfile( expand("%:p:r").".png", expand("%:p:h") )!=""<CR> 
-                               \    :!%:p:r.png<CR> 
+                               \    :silent exe "!%:p:r.png"<CR> 
                                \:else<CR> 
                                \    :for line in readfile(expand("%:p"))<CR>
                                \        :let mlist = matchlist(line, '@startuml \([^ \t\r\n]*.png\)')<CR>
@@ -305,6 +305,13 @@ autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR>
                                 \    :vert topleft cwin<CR>
                                 \    :vert resize 50<CR>
                                 \:endif<CR> 
+" Auto command to swap the literals on either side of the literal over which the
+" mapped key (below) is pressed.
+autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
+" Auto command is different from the one above only with respect to the
+" characters excluded from the description of a literal. For 'C' round braces are
+" excluded in addition to the characters already in the exclusion list above.
+autocmd Filetype c nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{(]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;)]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
 autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> 
