@@ -245,17 +245,16 @@ autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
                                \:if findfile( expand("%:p:r").".png", expand("%:p:h") )!=""<CR> 
-                               \    :silent exe "!%:p:r.png"<CR> 
+                               \    :silent! exe "!%:p:r.png"<CR> 
                                \:else<CR> 
                                \    :for line in readfile(expand("%:p"))<CR>
                                \        :let mlist = matchlist(line, '@startuml \([^ \t\r\n]*.png\)')<CR>
                                \        :if len(mlist) > 1<CR>
-                               \            :silent exe "!".mlist[1]<CR>
+                               \            :silent! exe "!".mlist[1]<CR>
                                \            :break<CR>
                                \        :endif<CR>
                                \    :endfor<CR>
                                \:endif<CR>
-                               \:redraw<CR>
                                " Remove 'break' to view all the generated images.
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
