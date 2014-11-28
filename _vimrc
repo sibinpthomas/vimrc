@@ -9,7 +9,7 @@ se sw=4
 se et
 se wm=0
 se ai
-se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat
+se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat,*.png
 se nobackup writebackup
 let s:vim_cstmztn_files_dir='E:\Vim_Files\'
 let &directory=s:vim_cstmztn_files_dir.'vim_backup'
@@ -111,6 +111,9 @@ Bundle 'yaroot/vissort'
 
 " PlantUML Syntax
 Bundle 'aklt/plantuml-syntax'
+
+" Diff sections of Vim buffers, including sections in same buffer
+Bundle 'AndrewRadev/linediff.vim'
 
 " Files which are necessary for my workflow such as -
 "        - Man pages
@@ -255,6 +258,7 @@ autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
                                \        :endif<CR>
                                \    :endfor<CR>
                                \:endif<CR>
+                               \:redraw<CR>
                                " Remove 'break' to view all the generated images.
 autocmd BufEnter *.tcl nmap <F5> :MakeTcl<CR>
 autocmd BufEnter *.py nmap <F5> :MakePy<CR>
@@ -322,7 +326,7 @@ autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR>
                                   \:endif<CR> 
 autocmd BufEnter *.cpp :retab
 autocmd BufEnter COMMIT_EDITMSG setl spell
-autocmd BufEnter COMMIT_EDITMSG setl tw=0
+autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
 command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
