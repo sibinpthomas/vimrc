@@ -53,72 +53,72 @@ call vundle#rc(expand(s:vim_cstmztn_files_dir.'bundle'))
 
 " let Vundle manage Vundle
 " required!
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
 " Bundles from GitHub repos:
 
 " CCTree
-Bundle 'vim-scripts/CCTree'
+Plugin 'hari-rangarajan/CCTree'
 
 " Gundo
-Bundle 'vim-scripts/Gundo'
+Plugin 'vim-scripts/Gundo'
 
 " Jedi-Vim
-Bundle 'davidhalter/jedi-vim'
+Plugin 'davidhalter/jedi-vim'
 
 " Mark
-Bundle 'vim-scripts/Mark--Karkat'
+Plugin 'vim-scripts/Mark--Karkat'
 
 " Multisearch
-Bundle 'vim-scripts/multisearch.vim'
+Plugin 'vim-scripts/multisearch.vim'
 
 " Nerdtree
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 
 " Python-Mode
-Bundle 'klen/python-mode'
+Plugin 'klen/python-mode'
 
 " Source-Explorer
-Bundle 'vim-scripts/SrcExpl'
+Plugin 'vim-scripts/SrcExpl'
 
 " Taglist
-Bundle 'vim-scripts/taglist.vim'
+Plugin 'vim-scripts/taglist.vim'
 
 " Trinity
-Bundle 'vim-scripts/Trinity'
+Plugin 'vim-scripts/Trinity'
 
 " Fugitive
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 
 " Markdown
-Bundle 'tpope/vim-markdown'
+Plugin 'tpope/vim-markdown'
 
 " Abolish
 " To handle variants (case and lexical) of a word
-Bundle 'tpope/vim-abolish'
+Plugin 'tpope/vim-abolish'
 
 " Markdown Preview
-Bundle 'swaroopch/vim-markdown-preview'
+Plugin 'swaroopch/vim-markdown-preview'
 
 " Vis
-Bundle 'vim-scripts/vis'
+Plugin 'vim-scripts/vis'
 
 " VisIncr
-Bundle 'vim-scripts/VisIncr'
+Plugin 'vim-scripts/VisIncr'
 
 " Vissort
-Bundle 'yaroot/vissort'
+Plugin 'yaroot/vissort'
 
 " PlantUML Syntax
-Bundle 'aklt/plantuml-syntax'
+Plugin 'aklt/plantuml-syntax'
 
 " Diff sections of Vim buffers, including sections in same buffer
-Bundle 'AndrewRadev/linediff.vim'
+Plugin 'AndrewRadev/linediff.vim'
 
 " Files which are necessary for my workflow such as -
 "        - Man pages
 "        - OS abstraction layer files
-Bundle 'sibinpthomas/vim_personal_xtra'
+Plugin 'sibinpthomas/vim_personal_xtra'
 
 " Installing plugins the first time
 if vundleAlreadyExists == 0
@@ -247,7 +247,7 @@ autocmd BufEnter *.txt setl tw=0
 autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
-                               \:if findfile( expand("%:p:r").".png", expand("%:p:h") )!=""<CR> 
+                               \:if findfile( expand("%:p:r").".png", expand("%:p:h") ) != ""<CR> 
                                \    :silent! exe "!%:p:r.png"<CR> 
                                \:else<CR> 
                                \    :for line in readfile(expand("%:p"))<CR>
@@ -267,42 +267,42 @@ autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
 autocmd BufEnter *.c nmap <F5> :Makexec<CR> 
-                              \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                              \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                               \    :!%:p:r.exe<CR>
                               \:else<CR>
                               \    :vert topleft cwin<CR>
                               \    :vert resize 50<CR>
                               \:endif<CR> 
 autocmd BufEnter *.c nmap a<F5> :Makexecall<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                \    :!%:p:r.exe<CR>
                                \:else<CR>
                                \    :vert topleft cwin<CR>
                                \    :vert resize 50<CR>
                                \:endif<CR> 
 autocmd BufEnter *.c nmap w<F5> :Makexecweak<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                \    :!%:p:r.exe<CR>
                                \:else<CR>
                                \    :vert topleft cwin<CR>
                                \    :vert resize 50<CR>
                                \:endif<CR> 
 autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                 \    :!%:p:r.exe<CR>
                                 \:else<CR>
                                 \    :vert topleft cwin<CR>
                                 \    :vert resize 50<CR>
                                 \:endif<CR> 
 autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                \    :!gdb %:p:r.exe<CR>
                                \:else<CR>
                                \    :vert topleft cwin<CR>
                                \    :vert resize 50<CR>
                                \:endif<CR> 
 autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                 \    :!gdb %:p:r.exe<CR>
                                 \:else<CR>
                                 \    :vert topleft cwin<CR>
@@ -318,7 +318,7 @@ autocmd Filetype c nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
 autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> 
-                                  \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") )!=""<CR>
+                                  \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                   \    :!%:p:r.exe<CR>
                                   \:else<CR>
                                   \    :vert topleft cwin<CR>
@@ -330,7 +330,29 @@ autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04
 
 command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-command CSC :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -b -R" | :cs add cscope.out | :CCTreeLoadDB cscope.out
+command CSC :exe "cs kill -1" |
+            \:if findfile("../test/Makefile") != "" |
+            \:   lcd ../test |
+            \:   exe delete("../cscope.out") |
+            \:   let s:lmake = &makeprg |
+            \:   let &makeprg = 'make' |
+            \:   make cscope |
+            \:   let &makeprg = s:lmake |
+            \:   lcd %:h |
+            \:   if findfile("../cscope.out") != "" |
+            \:      exe "cs add ../cscope.out %:p:h:h" |
+            \:      exe "CCTreeLoadDB ../cscope.out" |
+            \:   endif |
+            \:endif |
+            \:if cscope_connection() == 0 |
+            \:   exe delete("cscope.out") |
+            \:   let s:lmake = &makeprg |
+            \:   let &makeprg = 'cscope' |
+            \:   make -b -R |
+            \:   let &makeprg = s:lmake |
+            \:   exe "cs add cscope.out" |
+            \:   exe "CCTreeLoadDB cscope.out" |
+            \:endif |
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
 command -nargs=? Make :w | :se makeprg=make | :make! <args>
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
@@ -375,12 +397,10 @@ if has("cscope") && executable("cscope")
     " add any database in current directory
     if filereadable("cscope.out")
         cs add cscope.out
-        exe 'so '.s:vim_cstmztn_files_dir.'bundle\CCTree\ftplugin\cctree.vim'
         silent CCTreeLoadDB cscope.out
         " else add database pointed to by environment
     elseif $CSCOPE_DB != ""
         cs add $CSCOPE_DB
-        exe 'so '.s:vim_cstmztn_files_dir.'bundle\CCTree\ftplugin\cctree.vim'
         silent CCTreeLoadDB $CSCOPE_DB
     else
         autocmd BufEnter * silent! lcd %:p:h
@@ -610,7 +630,7 @@ function! Toggle_comment_func() range
     noh 
 endfunction
 "erstwhile toggle_comment
-"nmap com :if search('\/\*.*\*\/','c',line("."))!=0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
+"nmap com :if search('\/\*.*\*\/','c',line(".")) != 0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
 
 
 " Jump to the next or previous line that has the same level or a lower
