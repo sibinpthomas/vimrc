@@ -332,17 +332,26 @@ command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command CSC :exe "cs kill -1" |
             \:if findfile("../test/Makefile") != "" |
-            \:   lcd ../test |
-            \:   exe delete("../cscope.out") |
             \:   let s:lmake = &makeprg |
             \:   let &makeprg = 'make' |
-            \:   make cscope |
-            \:   let &makeprg = s:lmake |
-            \:   lcd %:h |
-            \:   if findfile("../cscope.out") != "" |
-            \:      exe "cs add ../cscope.out %:p:h:h" |
-            \:      exe "CCTreeLoadDB ../cscope.out" |
+            \:   if expand("%:p:h:t") ==# "test" |
+            \:      exe delete("./cscope.out") |
+            \:      make cscope_test |
+            \:      if findfile("./cscope.out") != "" |
+            \:         exe "cs add ./cscope.out %:p:h" |
+            \:         exe "CCTreeLoadDB ./cscope.out" |
+            \:      endif |
+            \:   else |
+            \:      lcd ../test |
+            \:      exe delete("../cscope.out") |
+            \:      make cscope |
+            \:      if findfile("../cscope.out") != "" |
+            \:         exe "cs add ../cscope.out %:p:h:h" |
+            \:         exe "CCTreeLoadDB ../cscope.out" |
+            \:      endif |
+            \:      lcd %:h |
             \:   endif |
+            \:   let &makeprg = s:lmake |
             \:endif |
             \:if cscope_connection() == 0 |
             \:   exe delete("cscope.out") |
