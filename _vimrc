@@ -308,6 +308,13 @@ autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR>
                                 \    :vert topleft cwin<CR>
                                 \    :vert resize 50<CR>
                                 \:endif<CR> 
+autocmd BufEnter *.c nmap 99<F5> :Makexec99<CR> 
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
+                                \    :!%:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
 " Auto command to swap the literals on either side of the literal over which the
 " mapped key (below) is pressed.
 autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
@@ -317,13 +324,20 @@ autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\
 autocmd Filetype c nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{(]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;)]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
-autocmd BufEnter *.cpp nmap <S-F5> :MakexecCPP<CR> 
-                                  \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                  \    :!%:p:r.exe<CR>
-                                  \:else<CR>
-                                  \    :vert topleft cwin<CR>
-                                  \    :vert resize 50<CR>
-                                  \:endif<CR> 
+autocmd BufEnter *.cpp nmap <F5> :MakexecCPP<CR> 
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
+                                \    :!%:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
+autocmd BufEnter *.cpp nmap w<F5> :MakexecCPPweak<CR>
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
+                                \    :!%:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
 autocmd BufEnter *.cpp :retab
 autocmd BufEnter COMMIT_EDITMSG setl spell
 autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
@@ -373,13 +387,21 @@ command Makecompile :w | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werro
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
 command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:pl_abs_files_dir | :tabe %:p:r.86S
 command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:pl_abs_files_dir | :tabe %:p:r.armS
+
 command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
 command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
 command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ *.c | :make!
 command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
-command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=g++\ -ansi\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ % | :make!
+
+command -nargs=? Makexec99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c99 -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? Makexecweak99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c99 -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? MakexecDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -std=c99 -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
+command -nargs=? MakexecweakDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
+
+command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? MakexecCPPweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -fpermissive -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :MarkdownPreview
