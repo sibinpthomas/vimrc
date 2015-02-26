@@ -97,9 +97,6 @@ Plugin 'tpope/vim-markdown'
 " To handle variants (case and lexical) of a word
 Plugin 'tpope/vim-abolish'
 
-" Markdown Preview
-Plugin 'swaroopch/vim-markdown-preview'
-
 " Vis
 Plugin 'vim-scripts/vis'
 
@@ -245,6 +242,9 @@ autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bi
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt setl tw=0 
 autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
+                               \:if findfile( expand("%:p:r").".html" ,expand("%:p:h") ) != ""<CR>
+                               \    :silent! exe "!%:p:r.html"<CR> 
+                               \:endif<CR> 
 autocmd BufEnter *.tex nmap <F5> :MakeLatex<CR>
 autocmd BufEnter *.pu nmap <F5> :MakePlantUML<CR>
                                \:if findfile( expand("%:p:r").".png", expand("%:p:h") ) != ""<CR> 
@@ -404,7 +404,7 @@ command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg=
 command -nargs=? MakexecCPPweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -fpermissive -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
-command -nargs=? MakeMarkdown :w | :MarkdownPreview
+command -nargs=? MakeMarkdown :w | :silent exe "!multimarkdown % -o %:p:r.html"
 command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
 command -nargs=? MakePy :w | :!%
 command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
@@ -699,15 +699,21 @@ function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
   endwhile
 endfunction
 
+"
 " Moving back and forth between lines of same or lower indentation.
+"
+" Move to same level of indentation.
 nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
 nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+" Move to lower level of indentation.
 nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
 nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
+
 vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
 vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
 vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
 vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
+
 onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
 onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
 onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
