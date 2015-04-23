@@ -11,7 +11,7 @@ se wm=0
 se ai
 se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat,*.png
 se nobackup writebackup
-let s:vim_cstmztn_files_dir='E:\Vim_Files\'
+let s:vim_cstmztn_files_dir='D:\Vim_Files\'
 let &directory=s:vim_cstmztn_files_dir.'vim_backup'
 let &backupdir=s:vim_cstmztn_files_dir.'vim_backup'
 se nofoldenable
@@ -36,24 +36,24 @@ endif
 " Based on -
 "   https://github.com/fisadev/fisa-vim-config/blob/master/.vimrc
 let vundleAlreadyExists=1
-let vundle_readme=expand(s:vim_cstmztn_files_dir.'bundle\vundle\README.md')
+let vundle_readme=expand(s:vim_cstmztn_files_dir.'bundle\Vundle.vim\README.md')
 if !filereadable(vundle_readme)
     echo "Installing Vundle..."
     echo ""
     if isdirectory(expand(s:vim_cstmztn_files_dir.'bundle')) == 0
         call mkdir(expand(s:vim_cstmztn_files_dir.'bundle'), 'p')
     endif
-    execute 'silent !git clone https://github.com/gmarik/vundle "' . expand(s:vim_cstmztn_files_dir.'bundle\vundle') . '"'
+    execute 'silent !git clone https://github.com/gmarik/Vundle.vim.git "' . expand(s:vim_cstmztn_files_dir.'bundle\Vundle.vim') . '"'
     let vundleAlreadyExists=0
 endif
 
 " Setting runtimepath for Vundle use
-let &rtp.=','.s:vim_cstmztn_files_dir.'bundle\vundle\'
-call vundle#rc(expand(s:vim_cstmztn_files_dir.'bundle'))
+let &rtp.=','.s:vim_cstmztn_files_dir.'bundle\Vundle.vim\'
+call vundle#begin(expand(s:vim_cstmztn_files_dir.'bundle'))
 
 " let Vundle manage Vundle
 " required!
-Plugin 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
 
 " Bundles from GitHub repos:
 
@@ -117,11 +117,16 @@ Plugin 'AndrewRadev/linediff.vim'
 "        - OS abstraction layer files
 Plugin 'sibinpthomas/vim_personal_xtra'
 
+" All the Plugins must be added before the following line
+call vundle#end()
+filetype plugin indent on
+
+
 " Installing plugins the first time
 if vundleAlreadyExists == 0
     echo "Installing Bundles, please ignore key map error messages"
     echo ""
-    execute 'BundleInstall'
+    execute 'PluginInstall'
 endif
 
 
