@@ -301,14 +301,14 @@ autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR>
                                 \:endif<CR> 
 autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> 
                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                               \    :!gdb %:p:r.exe<CR>
+                               \    :silent !start gdb %:p:r.exe<CR>
                                \:else<CR>
                                \    :vert topleft cwin<CR>
                                \    :vert resize 50<CR>
                                \:endif<CR> 
 autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
                                 \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!gdb %:p:r.exe<CR>
+                                \    :silent !start gdb %:p:r.exe<CR>
                                 \:else<CR>
                                 \    :vert topleft cwin<CR>
                                 \    :vert resize 50<CR>
@@ -412,7 +412,7 @@ command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :silent exe "!multimarkdown % -o %:p:r.html"
 command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
 command -nargs=? MakePy :w | :!%
-command -nargs=? MakeDebugPy :w | :!python -u -m pdb %
+command -nargs=? MakeDebugPy :w | :silent !start python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
 let pl_os_abstraction=s:pl_abs_files_dir.'os_abstraction.h'
