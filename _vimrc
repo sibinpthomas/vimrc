@@ -329,6 +329,8 @@ autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\
 autocmd Filetype c nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{(]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;)]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
 autocmd BufEnter *.c :retab
 autocmd BufEnter *.h :retab
+autocmd VimEnter *.c call LoadCscopeDB()
+autocmd VimEnter *.h call LoadCscopeDB()
 autocmd BufEnter *.cpp nmap <F5> :MakexecCPP<CR> 
                                 \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
                                 \    :!%:p:r.exe<CR>
@@ -424,27 +426,31 @@ source $VIMRUNTIME/mswin.vim
 "behave mswin
 
 
-if has("cscope") && executable("cscope")
-    se csprg=cscope
-    set csto=0
-    set cst
-    set nocsverb
-    se cscopequickfix=s0,c0,d0,i0,t0,e0
-    " add any database in current directory
-    if filereadable("cscope.out")
-        cs add cscope.out
-        silent CCTreeLoadDB cscope.out
-        " else add database pointed to by environment
-    elseif $CSCOPE_DB != ""
-        cs add $CSCOPE_DB
-        silent CCTreeLoadDB $CSCOPE_DB
+""" Load CSCOPE database on entry into 'C' filetype buffer
+function! LoadCscopeDB()
+    if has("cscope") && executable("cscope")
+        se csprg=cscope
+        set csto=0
+        set cst
+        set nocsverb
+        se cscopequickfix=s0,c0,d0,i0,t0,e0
+        " add any database in current directory
+        if filereadable("cscope.out")
+            cs add cscope.out
+            silent CCTreeLoadDB cscope.out
+            " else add database pointed to by environment
+        elseif $CSCOPE_DB != ""
+            cs add $CSCOPE_DB
+            silent CCTreeLoadDB $CSCOPE_DB
+        else
+            autocmd BufEnter * silent! lcd %:p:h
+        endif
+        set csverb
     else
         autocmd BufEnter * silent! lcd %:p:h
     endif
-    set csverb
-else
-    autocmd BufEnter * silent! lcd %:p:h
-endif
+endfunc
+
 noh
 
 
