@@ -245,7 +245,8 @@ autocmd BufEnter * syntax keyword Type CHAR INT8 UCHAR UINT8 INT16 UINT16 INT32 
 autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v_u16 v_s16 v_u32 v_s32 v_u64 v_s64 SOCKET 
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
-autocmd BufEnter *.txt setl tw=0 
+autocmd BufEnter *.txt,*.md setl tw=0
+autocmd BufEnter *.txt,*.md setl spell
 autocmd BufEnter *.md nmap <F5> :MakeMarkdown<CR>
                                \:if findfile( expand("%:p:r").".html" ,expand("%:p:h") ) != ""<CR>
                                \    :silent! exe "!%:p:r.html"<CR> 
