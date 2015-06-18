@@ -220,6 +220,9 @@ nmap <F12>  :TrinityToggleNERDTree<CR>
 
 
  
+" Toggle wrap and horizontal scrollbar
+nmap <F7>   :exe ':set wrap! go'.'-+'[&wrap]."=b"<CR>
+
 " Finds name and path of current buffer
 cabbr fecho echo expand("%:p")
 
@@ -549,10 +552,10 @@ snoremap <silent> # <C-g>:call VisualSearch('b')<CR>:set hls<CR>
 
 
 
-""" map <F10> to toggle the highlight search mode
+""" map <F6> to toggle the highlight search mode
 """ if hlsearch is on  then simply turn it off
 """ if hlsearch is off then highlight word under cursor only
-nnoremap <silent> hls :call SetSearchReg()<CR>:set invhls<CR>
+nnoremap <silent> <F6> :call SetSearchReg()<CR>:set invhls<CR>
 function! SetSearchReg()
     if &hlsearch == 0
         let @/ = expand('<cword>')
