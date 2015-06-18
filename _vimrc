@@ -162,6 +162,8 @@ nmap <C-Space>V :vert topleft cwin<CR> :vert resize 50<CR>
 nmap ; :%s/\<<C-R>=expand("<cword>")<CR>\>//gn
 nmap , :vimgrep /\<<C-R>=expand("<cword>")<CR>\>/ ./**/*.[ch]
 nmap K :Man <C-R>=expand("<cword>")<CR><CR>
+nmap <F6> :noh<CR>
+nmap <F7> :exe ':set wrap! go'.'-+'[&wrap]."=b"<CR>
 smap << <C-G> < <C-G>
 noremap <C-D> <C-A>
 inoremap jj <Esc>
@@ -219,9 +221,6 @@ nmap <F11>  :TrinityToggleTagList<CR>
 nmap <F12>  :TrinityToggleNERDTree<CR>
 
 
- 
-" Toggle wrap and horizontal scrollbar
-nmap <F7>   :exe ':set wrap! go'.'-+'[&wrap]."=b"<CR>
 
 " Finds name and path of current buffer
 cabbr fecho echo expand("%:p")
@@ -552,10 +551,10 @@ snoremap <silent> # <C-g>:call VisualSearch('b')<CR>:set hls<CR>
 
 
 
-""" map <F6> to toggle the highlight search mode
+""" map hls to toggle the highlight search mode
 """ if hlsearch is on  then simply turn it off
 """ if hlsearch is off then highlight word under cursor only
-nnoremap <silent> <F6> :call SetSearchReg()<CR>:set invhls<CR>
+nnoremap <silent> hls :call SetSearchReg()<CR>:set invhls<CR>
 function! SetSearchReg()
     if &hlsearch == 0
         let @/ = expand('<cword>')
