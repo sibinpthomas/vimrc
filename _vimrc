@@ -9,6 +9,7 @@ se sw=4
 se et
 se wm=0
 se ai
+noh
 se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat,*.png
 se nobackup writebackup
 let s:vim_cstmztn_files_dir='D:\Vim_Files\'
@@ -239,6 +240,7 @@ nmap ovim :tabe $VIM\_vimrc<CR>
 
 autocmd!
 autocmd GUIEnter * :simalt ~x
+autocmd BufEnter * silent! lcd %:p:h
 autocmd BufEnter *.86S se filetype=asm
 autocmd BufEnter *.armS se filetype=asm
 autocmd BufEnter * syntax keyword Type api_result_e API_RESULT API_SUCCESS API_FAILURE API_ON API_OFF API_TRUE API_FALSE
@@ -437,25 +439,20 @@ function! LoadCscopeDB()
         set cst
         set nocsverb
         se cscopequickfix=s0,c0,d0,i0,t0,e0
+
         " add any database in current directory
         if filereadable("cscope.out")
             cs add cscope.out
             silent CCTreeLoadDB cscope.out
-            " else add database pointed to by environment
+        " else add database pointed to by environment
         elseif $CSCOPE_DB != ""
             cs add $CSCOPE_DB
             silent CCTreeLoadDB $CSCOPE_DB
-        else
-            autocmd BufEnter * silent! lcd %:p:h
         endif
+
         set csverb
-    else
-        autocmd BufEnter * silent! lcd %:p:h
     endif
 endfunc
-
-noh
-
 
 
 """ Compile *.tex file to generate *.pdf
