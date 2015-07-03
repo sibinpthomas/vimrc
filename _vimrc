@@ -325,6 +325,13 @@ autocmd BufEnter *.c nmap 99<F5> :Makexec99<CR>
                                 \    :vert topleft cwin<CR>
                                 \    :vert resize 50<CR>
                                 \:endif<CR> 
+autocmd BufEnter *.c nmap 11<F5> :Makexec11<CR> 
+                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
+                                \    :!%:p:r.exe<CR>
+                                \:else<CR>
+                                \    :vert topleft cwin<CR>
+                                \    :vert resize 50<CR>
+                                \:endif<CR> 
 " Auto command to swap the literals on either side of the literal over which the
 " mapped key (below) is pressed.
 autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
@@ -411,6 +418,11 @@ command -nargs=? Makexec99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='
 command -nargs=? Makexecweak99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c99 -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? MakexecDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -std=c99 -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
 command -nargs=? MakexecweakDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
+
+command -nargs=? Makexec11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c11 -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? Makexecweak11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c11 -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
+command -nargs=? MakexecDebug11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -std=c11 -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
+command -nargs=? MakexecweakDebug11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
 
 command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
 command -nargs=? MakexecCPPweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -fpermissive -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
