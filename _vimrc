@@ -236,6 +236,7 @@ iabbr hte the
 nmap zz o<Esc>
 nmap vim :so $VIM\_vimrc<CR>
 nmap ovim :tabe $VIM\_vimrc<CR>
+nmap osal :ExploreOSAL<CR>
 
 
 autocmd!
@@ -401,6 +402,7 @@ command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\
 
 " Platform Abstraction Header files location
 let s:pl_abs_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+command ExploreOSAL :exe "tabe ".s:pl_abs_files_dir
 
 command Makecompile :w | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
 command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
