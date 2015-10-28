@@ -433,7 +433,7 @@ command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
 command -nargs=? MakeTcl :w | :!tclsh %
 command -nargs=? MakeMarkdown :w | :silent exe "!multimarkdown % -o %:p:r.html"
 command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
-command -nargs=? MakePy :w | :!%
+command -nargs=? MakePy :w | :silent !start cmd /c % & pause
 command -nargs=? MakeDebugPy :w | :silent !start python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
