@@ -1,3 +1,6 @@
+" ----------------------------------------------------------------------------
+" Configuring VIM options.
+" ----------------------------------------------------------------------------
 set nocompatible
 set exrc
 set autoread
@@ -12,17 +15,20 @@ se ai
 noh
 se wildignore=*.o,*.obj,*.vcd,*.exe,*.dat,*.png
 se nobackup writebackup
-let s:vim_cstmztn_files_dir='D:\Vim_Files\'
-let &directory=s:vim_cstmztn_files_dir.'vim_backup'
-let &backupdir=s:vim_cstmztn_files_dir.'vim_backup'
+let s:vim_cstmztn_files_dir='D:\Vim_Files\'  " Create this folder at the given path if new system.
+let &directory=s:vim_cstmztn_files_dir.'vim_backup'  " Create this sub-folder in the folder
+let &backupdir=s:vim_cstmztn_files_dir.'vim_backup'  "   created in the above step
 se nofoldenable
 se foldmethod=syntax
 se foldcolumn=3
 se cmdheight=1
 se clipboard=unnamed
+set backspace=indent,eol,start
+
 if has('gui_running')
     se guifont=Courier_New:h12:cANSI
 endif    
+
 if has("multi_byte")
   if &termencoding == ""
     let &termencoding = &encoding
@@ -33,9 +39,18 @@ if has("multi_byte")
   set fileencodings=ucs-bom,utf-8,latin1
 endif
 
-" Setting up Vundle - The Vim Plugin Bundler
+" Setting options to mimic MS WIN like behaviour
+source $VIMRUNTIME/mswin.vim
+"behave mswin
+
+
+" ----------------------------------------------------------------------------
+" Setting up Vundle - The Vim Plugin Bundler, and various Vundle based VIM 
+" plugins.
+"
 " Based on -
 "   https://github.com/fisadev/fisa-vim-config/blob/master/.vimrc
+" ----------------------------------------------------------------------------
 let vundleAlreadyExists=1
 let vundle_readme=expand(s:vim_cstmztn_files_dir.'bundle\Vundle.vim\README.md')
 if !filereadable(vundle_readme)
@@ -119,6 +134,7 @@ Plugin 'vim-scripts/project.tar.gz'
 " Files which are necessary for my workflow such as -
 "        - Man pages
 "        - OS abstraction layer files
+"        - Logger
 Plugin 'sibinpthomas/vim_personal_xtra'
 
 " All the Plugins must be added before the following line
@@ -134,6 +150,9 @@ if vundleAlreadyExists == 0
 endif
 
 
+" ----------------------------------------------------------------------------
+" Key mappings.
+" ----------------------------------------------------------------------------
 amenu icon=$VIM/Compile.bmp ToolBar.Compile <F5><CR>
 amenu icon=$VIM/WeakCompile.bmp ToolBar.WeakCompile w<F5><CR>
 nmap gF c :tabe <cfile><CR>
@@ -171,61 +190,61 @@ nmap <F7> :exe ':set wrap! go'.'-+'[&wrap]."=b"<CR>
 smap << <C-G> < <C-G>
 noremap <C-D> <C-A>
 inoremap jj <Esc>
+nmap zz o<Esc>
+nmap vim :so $VIM\_vimrc<CR>
+nmap ovim :tabe $VIM\_vimrc<CR>
+nmap osal :ExploreOSAL<CR>
 
+" Open OS Abstraction header file in new Tab.
+let s:pl_abs_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+let s:pl_os_abstraction=s:pl_abs_files_dir.'os_abstraction.h'
+nmap opl :exe 'tabe '.s:pl_os_abstraction<CR>
+
+
+" Cscope related mappings
+"------------------------
 " run cscope and add the cscope.out database to the session
 nmap csc :CSC<CR> 
-
 " run cscope and add the cscope.out database to the session
 nmap cscf :CSCf<CR> 
-
 " simple find
 nmap <C-F1> :cs find 0 <C-R>=expand("<cword>")<CR><CR> 
-
 " simple find appended to quickfix window
 nmap c<C-F1> :se cscopequickfix=s-,c0,d0,i0,t0,e0<CR> :cs find 0 <C-R>=expand("<cword>")<CR><CR> :se cscopequickfix=s0,c0,d0,i0,t0,e0<CR>
-
 " find definition
 nmap <C-F2> :cs find 1 <C-R>=expand("<cword>")<CR><CR>
-
 " find definition appended to quickfix window
 nmap c<C-F2> :se cscopequickfix=s-,c0,d0,i0,t0,e0<CR> :cs find 1 <C-R>=expand("<cword>")<CR><CR> :se cscopequickfix=s0,c0,d0,i0,t0,e0<CR>
-
 " functions called by this function
 nmap <C-F3> :cs find 2 <C-R>=expand("<cword>")<CR><CR>
-
 " functions called by this function appended to quickfix window
 nmap c<C-F3> :se cscopequickfix=s0,c0,d-,i0,t0,e0<CR> :cs find 2 <C-R>=expand("<cword>")<CR><CR> :se cscopequickfix=s0,c0,d0,i0,t0,e0<CR>
-
 " functions calling this function
 nmap <C-F4><F4> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
-
 " functions calling this function appended to quickfix window
 nmap c<C-F4><F4> :se cscopequickfix=s0,c-,d0,i0,t0,e0<CR> :cs find 3 <C-R>=expand("<cword>")<CR><CR> :se cscopequickfix=s0,c0,d0,i0,t0,e0<CR>
-
 " Find this file
 nmap <C-F5> :cs find 7 <C-R>=expand("<cfile>")<CR><CR>
-
 " Find files #including this file
 nmap <C-F6> :cs find 8 <C-R>=expand("<cfile>")<CR><CR>
 
 
 " Trinity stuff
 " http://www.vim.org/scripts/script.php?script_id=2347
-"
+"-----------------------------------------------------
 " Open and close all the three plugins on the same time
 nmap <F8>   :TrinityToggleAll<CR>
-
 " Open and close the srcexpl.vim separately
 nmap <F10>   :TrinityToggleSourceExplorer<CR>
-
 " Open and close the taglist.vim separately
 nmap <F11>  :TrinityToggleTagList<CR>
-
 " Open and close the NERD_tree.vim separately
 nmap <F12>  :TrinityToggleNERDTree<CR>
 
 
-
+" ----------------------------------------------------------------------------
+" Abbreviations.
+" ----------------------------------------------------------------------------
 " Finds name and path of current buffer
 cabbr fecho echo expand("%:p")
 
@@ -236,12 +255,10 @@ cabbr tcs tabnew \| :cs find 7
 iabbr pri printf("");
 iabbr hte the
 
-nmap zz o<Esc>
-nmap vim :so $VIM\_vimrc<CR>
-nmap ovim :tabe $VIM\_vimrc<CR>
-nmap osal :ExploreOSAL<CR>
 
-
+" ----------------------------------------------------------------------------
+" Auto Commands.
+" ----------------------------------------------------------------------------
 autocmd!
 autocmd GUIEnter * :simalt ~x
 autocmd BufEnter * silent! lcd %:p:h
@@ -366,6 +383,10 @@ autocmd BufEnter *.cpp :retab
 autocmd BufEnter COMMIT_EDITMSG setl spell
 autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
+
+" ----------------------------------------------------------------------------
+" User defined Commands.
+" ----------------------------------------------------------------------------
 command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command CSC :exe "cs kill -1" |
@@ -405,7 +426,6 @@ command -nargs=? Make :w | :se makeprg=make | :make! <args>
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
 
 " Platform Abstraction Header files location
-let s:pl_abs_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
 command ExploreOSAL :exe "tabe ".s:pl_abs_files_dir
 
 command Makecompile :w | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
@@ -440,16 +460,22 @@ command -nargs=? MakePy :w | :silent !start cmd /c % & pause
 command -nargs=? MakeDebugPy :w | :silent !start python -u -m pdb %
 command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
-let pl_os_abstraction=s:pl_abs_files_dir.'os_abstraction.h'
-nmap opl :exe 'tabe '.pl_os_abstraction<CR>
 
-source $VIMRUNTIME/vimrc_example.vim
-"source $VIMRUNTIME/autotag.vim
-source $VIMRUNTIME/mswin.vim
-"behave mswin
+" Switch syntax highlighting on, when the terminal has colors
+"
+" Setting syntax on has to come after all the user-defined commands 
+" definitions. Can't place along with th configuring of the other Vim
+" options upfront because it doesn't work - need to figure out why (TODO).
+if &t_Co > 2 || has("gui_running")
+  syntax on
+endif
 
+" ----------------------------------------------------------------------------
+" User defined Functions.
+" ----------------------------------------------------------------------------
 
-""" Load CSCOPE database on entry into 'C' filetype buffer
+" Load CSCOPE database on entry into 'C' filetype buffer
+"-------------------------------------------------------
 function! LoadCscopeDB()
     if has("cscope") && executable("cscope")
         se csprg=cscope
@@ -473,7 +499,8 @@ function! LoadCscopeDB()
 endfunc
 
 
-""" Compile *.tex file to generate *.pdf
+" Compile *.tex file to generate *.pdf
+"-------------------------------------
 function! CompileLatexFile(filename_root)
     if filereadable(a:filename_root . ".dvi")
         exe delete(a:filename_root . ".dvi")
@@ -515,35 +542,9 @@ function! CompileLatexFile(filename_root)
 endfunc
 
 
-" smap <C-f> <C-g>:call RegCopy()<CR>
-" xmap <C-f> :call RegCopy()<CR>
-" function! RegCopy() range
-"     let l:char=nr2char(getchar())
-"     if (l:char<='z' && l:char>='a') || (l:char<='Z' && l:char>='A')
-"         let l:saved_reg = @"
-"         execute "normal! vgvy"
-"         call setreg( l:char, @")
-"         "echo @"
-"         "echo getreg(l:char)
-"         let @" = l:saved_reg
-"     else
-"         echo ":Error in arg to RegCopy()"
-"     endif
-" endfunction
-" 
-" nmap <C-b> :call RegPaste()<CR>
-" imap <C-b> <C-o>:call RegPaste()<CR>
-" function! RegPaste() range
-"     let l:char=nr2char(getchar())
-"     if (l:char<='z' && l:char>='a')
-"         exec "normal \"" . l:char . "p"
-"     else
-"         echo ":Error in arg to RegPaste()"
-"     endif
-" endfunction
-
-""" Search for visually selected text {{{
-""" From an idea by Michael Naumann, Jürgen Krämer.
+" Search for visually selected text
+" From an idea by Michael Naumann, Jürgen Krämer
+"-----------------------------------------------
 function! VisualSearch(direction) range
     let l:saved_reg = @"
     execute "normal! vgvy"
@@ -564,24 +565,21 @@ snoremap <silent> * <C-g>:call VisualSearch('f')<CR>:set hls<CR>
 snoremap <silent> # <C-g>:call VisualSearch('b')<CR>:set hls<CR>
 
 
-
-
-""" map hls to toggle the highlight search mode
-""" if hlsearch is on  then simply turn it off
-""" if hlsearch is off then highlight word under cursor only
-nnoremap <silent> hls :call SetSearchReg()<CR>:set invhls<CR>
+" if hlsearch is on  then simply turn it off
+" if hlsearch is off then highlight word under cursor only
+"---------------------------------------------------------
 function! SetSearchReg()
     if &hlsearch == 0
         let @/ = expand('<cword>')
     endif
 endfunc
 
+" map hls to toggle the highlight search mode
+nnoremap <silent> hls :call SetSearchReg()<CR>:set invhls<CR>
 
 
-""" map 'col' to find the next line in the current buffer which extends beyond 80
-""" columns in width.
-""" Finds the next line (from current line) with more than 80 columns
-nmap col :call Column80_line()<CR>
+" Finds the next line (from current line) with more than 80 columns
+"------------------------------------------------------------------
 function! Column80_line() range
     let l:save_cursor = getpos(".")
     let l:count = a:firstline+1
@@ -604,13 +602,14 @@ function! Column80_line() range
     endif
 endfunction
 
+" Map 'col' to find the next line over 80 columns in width.
+nmap col :call Column80_line()<CR>
 
-""" Indent Python in the Google way.
 
+" Indent Python in the Google way.
+"---------------------------------
 let s:maxoff = 50 " maximum number of lines to look backwards.
-
 function GetGooglePythonIndent(lnum)
-
   " Indent inside parens.
   " Align with the open paren unless it is at the end of the line.
   " E.g.
@@ -634,37 +633,15 @@ function GetGooglePythonIndent(lnum)
 
   " Delegate the rest to the original function.
   return GetPythonIndent(a:lnum)
-
 endfunction
 
 let pyindent_nested_paren="&sw*2"
 let pyindent_open_paren="&sw*2"
 
 
-"*****************************************************************************
-"** input:   strProjectPath:  path of Visual Studio project                 
-"**          strProjectName:  name of Visual Studio project                 
-"** output:  none                                                           
-"*****************************************************************************
-"** remarks:                                                                
-"**   Setup some variables so that the script functions can find the make   
-"**   file, exe-file...                                                     
-"**   E.g.  :call VVS_SetEnvironment( 'f:\prog\GALer', 'GALer' )            
-"*****************************************************************************
-function VVS_SetEnvironment( strProjectPath, strProjectName )
-
-    so $VIM\vim70\VimVS6.vim
-
-    call VVS_Init( a:strProjectPath, a:strProjectName )
-
-endfunction
-
-
-""" map 'com' to toggle commenting of the given number of lines
-""" if the lines are already commented, uncomment them
-""" if the lines aren't commented, comment them
-nmap com :call Toggle_comment_func()<CR> 
-vmap com :call Toggle_comment_func()<CR> 
+" Function to comment lines, in the given range, if they are uncommented.
+" If the lines are already commented then the function uncomments them.
+"----------------------------------------------------------------------
 function! Toggle_comment_func() range
     let l:count = a:firstline
     "echo l:count.'  count'
@@ -689,8 +666,13 @@ function! Toggle_comment_func() range
                                    "comment block 
     noh 
 endfunction
+
 "erstwhile toggle_comment
 "nmap com :if search('\/\*.*\*\/','c',line(".")) != 0<CR> :.s/\/\*\(.*\)\*\//\1/g<CR> :else<CR> :.s/\(\s*\)\(.*\)\(\s*\)/\1\/\*\2\*\/\3/g<CR> :endif<CR> :noh<CR> 
+
+" map 'com' to toggle commenting of the given number of lines
+nmap com :call Toggle_comment_func()<CR> 
+vmap com :call Toggle_comment_func()<CR> 
 
 
 " Jump to the next or previous line that has the same level or a lower
@@ -706,6 +688,7 @@ endfunction
 " false: Go to line with the same indentation level
 " skipblanks (bool): true: Skip blank lines
 " false: Don't skip blank lines
+"-------------------------------------------------------------
 function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
   let line = line('.')
   let column = col('.')
@@ -728,31 +711,32 @@ function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
   endwhile
 endfunction
 
-"
-" Moving back and forth between lines of same or lower indentation.
-"
 " Move to same level of indentation.
 nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
 nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
+vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
+onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+
 " Move to lower level of indentation.
 nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
 nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
-
-vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
-vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
 vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
 vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
-
-onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
-onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
 onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
 onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
 
 
-"****** C syntax file controls ******
+" ----------------------------------------------------------------------------
+"  Plugin Configuration
+" ----------------------------------------------------------------------------
+
+" C syntax file controls
+"-----------------------
 """ allow C++ style comments
 let c_cpp_comments = 1 
-"unlet! c_cpp_comment " show eror on C++ style comments
+"unlet! c_cpp_comment " show error on C++ style comments
 """ Highlight any spaces before tabs, and any whitespace at the end of a line as an error.
 let c_space_errors = 1
 """ Do not highlight any whitespace at the end of a line as an error.
@@ -768,10 +752,6 @@ let c_C94_warn = 1
 let c_cpp_warn = 1 
 
 
-"****** Doxygen comments highlighting ******
+" Doxygen comments highlighting
+"------------------------------
 let g:load_doxygen_syntax=0
-
-""" --Begin Tip
-""" Toggle indent highlighting with
-"""   ToggleBlockHL
-""" --End Tip
