@@ -44,7 +44,7 @@ if !filereadable(vundle_readme)
     if isdirectory(expand(s:vim_cstmztn_files_dir.'bundle')) == 0
         call mkdir(expand(s:vim_cstmztn_files_dir.'bundle'), 'p')
     endif
-    execute 'silent !git clone https://github.com/gmarik/Vundle.vim.git "' . expand(s:vim_cstmztn_files_dir.'bundle\Vundle.vim') . '"'
+    execute 'silent !git clone https://github.com/VundleVim/Vundle.vim.git "' . expand(s:vim_cstmztn_files_dir.'bundle\Vundle.vim') . '"'
     let vundleAlreadyExists=0
 endif
 
@@ -54,7 +54,7 @@ call vundle#begin(expand(s:vim_cstmztn_files_dir.'bundle'))
 
 " let Vundle manage Vundle
 " required!
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
 " Bundles from GitHub repos:
 
@@ -112,6 +112,9 @@ Plugin 'aklt/plantuml-syntax'
 
 " Diff sections of Vim buffers, including sections in same buffer
 Plugin 'AndrewRadev/linediff.vim'
+
+" Project workspace like feel
+Plugin 'vim-scripts/project.tar.gz'
 
 " Files which are necessary for my workflow such as -
 "        - Man pages
