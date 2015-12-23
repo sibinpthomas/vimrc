@@ -196,9 +196,16 @@ nmap ovim :tabe $VIM\_vimrc<CR>
 nmap osal :ExploreOSAL<CR>
 
 " Open OS Abstraction header file in new Tab.
-let s:pl_abs_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
-let s:pl_os_abstraction=s:pl_abs_files_dir.'os_abstraction.h'
-nmap opl :exe 'tabe '.s:pl_os_abstraction<CR>
+let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+let s:osal_files_inc_dir=s:osal_files_dir.'inc\'
+let s:osal_files_src_dir=s:osal_files_dir.'src\'
+let s:osal_src_files=s:osal_files_src_dir.'pltfm_auxiliary.c'
+
+let s:osal_platform_dir=s:osal_files_dir.'cygwin\'
+let s:osal_platform_inc_dir=s:osal_platform_dir.'inc\'
+
+let s:pl_os_abst_hdr=s:osal_platform_inc_dir.'os_abstraction.h'
+nmap opl :exe 'tabe '.s:pl_os_abst_hdr<CR>
 
 
 " Cscope related mappings
@@ -364,7 +371,13 @@ let s:debug_flags_s="\\ -g\\ -O0"
 let s:c99_flags_s="\\ -std=c99"
 let s:c11_flags_s="\\ -std=c11"
 
-let s:inp_cfile_inc_dir_s="\\ -o\\ %<\\ %\\ -I".s:pl_abs_files_dir
+" Open OS Abstraction header file in new Tab.
+let s:logger_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\logger\'
+let s:logger_inc_dir=s:logger_dir.'inc\'
+let s:logger_src_file=s:logger_dir.'src\logger.c'
+
+let s:inp_cfile_inc_dir_s="\\ -o\\ %<\\ %\\ ".s:osal_src_files."\\ ".s:logger_src_file
+            \."\\ -I".s:osal_files_inc_dir." \\ -I".s:osal_platform_inc_dir." \\ -I".s:logger_inc_dir
 let s:inp_all_files_s="\\ -o\\ %<\\ *.c"
 
 " Save file | Delete exe | Set makeprg to GCC
@@ -409,9 +422,9 @@ command -nargs=? Makexecweak11 :exe s:makexec11_weak_s.' '.<q-args>.' | '.s:call
 command -nargs=? MakexecDebug11 :exe s:makexec11_dbg_full_s.' '.<q-args>.' | '.s:call_make_s
 command -nargs=? MakexecweakDebug11 :exe s:makexec11_dbg_weak_s.' '.<q-args>.' | '.s:call_make_s
 
-command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
-command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:pl_abs_files_dir | :tabe %:p:r.86S
-command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:pl_abs_files_dir | :tabe %:p:r.armS
+command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:osal_files_dir | :tabe %:p:r.prepro.c
+command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:osal_files_dir | :tabe %:p:r.86S
+command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:osal_files_dir | :tabe %:p:r.armS
 
 " C++ Programming related
 "------------------------
@@ -480,7 +493,7 @@ command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.o
 command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
-command ExploreOSAL :exe "tabe ".s:pl_abs_files_dir
+command ExploreOSAL :exe "tabe ".s:osal_files_dir
 
 
 " Switch syntax highlighting on, when the terminal has colors
