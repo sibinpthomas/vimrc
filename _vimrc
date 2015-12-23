@@ -298,6 +298,7 @@ autocmd BufEnter *.py nmap g<F5> :MakeDebugPy<CR>
 autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
+
 let s:if_find_exe_s="if findfile(expand(\"%:p:r\").\".exe\", expand(\"%:p:h\")) != \"\" |"
 let s:else_open_qfix_s=
         \"else |".
@@ -328,6 +329,7 @@ autocmd BufEnter *.c nmap g<F5>  :MakexecDebug<CR>
                                 \:silent execute g:open_gdb_or_qfix_s<CR>
 autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
                                 \:silent execute g:open_gdb_or_qfix_s<CR>
+
 " Auto command to swap the literals on either side of the literal over which the
 " mapped key (below) is pressed.
 autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
@@ -351,8 +353,94 @@ autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04
 " ----------------------------------------------------------------------------
 " User defined Commands.
 " ----------------------------------------------------------------------------
-command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
-command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+
+" C Programming related
+"----------------------
+let s:save_cfile_del_exe_s="w | silent exe \"!rm -f %:p:r.exe\""
+let s:set_makeprg_gcc_s="set makeprg=gcc"
+
+let s:comp_flags_full_s="\\ -ansi\\ -pedantic\\ -Wall\\ -Wextra\\ -Werror\\ -Wno-unused-parameter"
+let s:debug_flags_s="\\ -g\\ -O0"
+let s:c99_flags_s="\\ -std=c99"
+let s:c11_flags_s="\\ -std=c11"
+
+let s:inp_cfile_inc_dir_s="\\ -o\\ %<\\ %\\ -I".s:pl_abs_files_dir
+let s:inp_all_files_s="\\ -o\\ %<\\ *.c"
+
+" Save file | Delete exe | Set makeprg to GCC
+let s:sdsm_gcc=s:save_cfile_del_exe_s.' | '.s:set_makeprg_gcc_s
+
+let s:makecompile_full_s="w | ".s:set_makeprg_gcc_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+
+let     s:makexec_full_s=s:sdsm_gcc.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec_weak_s=s:sdsm_gcc.s:inp_cfile_inc_dir_s
+let s:makexec_dbg_full_s=s:sdsm_gcc.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec_dbg_weak_s=s:sdsm_gcc.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec_all_full_s=s:sdsm_gcc.s:comp_flags_full_s.s:inp_all_files_s
+let s:makexec_all_weak_s=s:sdsm_gcc.s:inp_all_files_s
+
+let     s:makexec99_full_s=s:sdsm_gcc.s:c99_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec99_weak_s=s:sdsm_gcc.s:c99_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec99_dbg_full_s=s:sdsm_gcc.s:c99_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec99_dbg_weak_s=s:sdsm_gcc.s:c99_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+
+let     s:makexec11_full_s=s:sdsm_gcc.s:c11_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec11_weak_s=s:sdsm_gcc.s:c11_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec11_dbg_full_s=s:sdsm_gcc.s:c11_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec11_dbg_weak_s=s:sdsm_gcc.s:c11_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+
+let s:call_make_s="make!"
+
+command Makecompile :exe s:makecompile_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexec :exe s:makexec_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexecweak :exe s:makexec_weak_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecDebug :exe s:makexec_dbg_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecweakDebug :exe s:makexec_dbg_weak_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexecall :exe s:makexec_all_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexecallweak :exe s:makexec_all_weak_s.' '.<q-args>.' | '.s:call_make_s
+
+command -nargs=? Makexec99 :exe s:makexec99_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexecweak99 :exe s:makexec99_weak_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecDebug99 :exe s:makexec99_dbg_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecweakDebug99 :exe s:makexec99_dbg_weak_s.' '.<q-args>.' | '.s:call_make_s
+
+command -nargs=? Makexec11 :exe s:makexec11_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? Makexecweak11 :exe s:makexec11_weak_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecDebug11 :exe s:makexec11_dbg_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecweakDebug11 :exe s:makexec11_dbg_weak_s.' '.<q-args>.' | '.s:call_make_s
+
+command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
+command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:pl_abs_files_dir | :tabe %:p:r.86S
+command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:pl_abs_files_dir | :tabe %:p:r.armS
+
+" C++ Programming related
+"------------------------
+let s:set_makeprg_gpp_s="set makeprg=g++"
+
+let s:cpp_weak_flags_s="\\ -fpermissive"
+
+" Save file | Delete exe | Set makeprg to G++
+let s:sdsm_gpp=s:save_cfile_del_exe_s.' | '.s:set_makeprg_gpp_s
+
+let s:makexecCpp_full_s=s:sdsm_gpp.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexecCpp_weak_s=s:sdsm_gpp.s:cpp_weak_flags_s.s:inp_cfile_inc_dir_s
+
+command -nargs=? MakexecCPP :exe s:makexecCpp_full_s.' '.<q-args>.' | '.s:call_make_s
+command -nargs=? MakexecCPPweak :exe s:makexecCpp_weak_s.' '.<q-args>.' | '.s:call_make_s
+
+" Other Make commands
+"----------------------------
+command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
+command -nargs=? MakeTcl :w | :!tclsh %
+command -nargs=? MakeMarkdown :w | :silent exe "!multimarkdown % -o %:p:r.html"
+command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
+command -nargs=? MakePy :w | :silent !start cmd /c % & pause
+command -nargs=? MakeDebugPy :w | :silent !start python -u -m pdb %
+command -nargs=? MakeDisassemblePy :w | :!python -m dis %
+command -nargs=? Make :w | :se makeprg=make | :make! <args>
+
+" Cscope related commands
+"------------------------
 command CSC :exe "cs kill -1" |
             \:if findfile("../test/Makefile") != "" |
             \:   let s:lmake = &makeprg |
@@ -386,49 +474,19 @@ command CSC :exe "cs kill -1" |
             \:   exe "CCTreeLoadDB cscope.out" |
             \:endif |
 command CSCf :if cscope_connection()==1 | exe "cs kill 0" | exe delete("cscope.out") | :endif | :silent exe "!cscope -i %" | :cs add cscope.out | :CCTreeLoadDB cscope.out
-command -nargs=? Make :w | :se makeprg=make | :make! <args>
+
+" Miscellaneous
+"--------------
+command -nargs=1 Man :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\man_pages\\man3\\<args>.txt'
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command Vimtips :exe 'tabe '.s:vim_cstmztn_files_dir.'bundle\\vim_personal_xtra\\Vim_Tips.txt'
-
-" Platform Abstraction Header files location
 command ExploreOSAL :exe "tabe ".s:pl_abs_files_dir
-
-command Makecompile :w | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
-command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:pl_abs_files_dir | :tabe %:p:r.prepro.c
-command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:pl_abs_files_dir | :tabe %:p:r.86S
-command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:pl_abs_files_dir | :tabe %:p:r.armS
-
-command -nargs=? Makexec :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? Makexecweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -ansi -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
-command -nargs=? MakexecweakDebug :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
-command -nargs=? Makexecall :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -ansi\ -pedantic\ -Wall\ -Wextra\ -Werror\ -Wno-unused-parameter\ -o\ %<\ *.c | :make!
-command -nargs=? Makexecallweak :w | :silent exe "!rm -f %:p:r.exe" | :se makeprg=gcc\ -o\ %<\ *.c | :make!
-
-command -nargs=? Makexec99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c99 -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? Makexecweak99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c99 -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -std=c99 -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
-command -nargs=? MakexecweakDebug99 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
-
-command -nargs=? Makexec11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c11 -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? Makexecweak11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -std=c11 -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? MakexecDebug11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -std=c11 -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir | :make!
-command -nargs=? MakexecweakDebug11 :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='gcc -g -O0 -o %< % -I'.s:pl_abs_files_dir | :make!
-
-command -nargs=? MakexecCPP :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -ansi -pedantic -Wall -Wextra -Werror -Wno-unused-parameter -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? MakexecCPPweak :w | :silent exe "!rm -f %:p:r.exe" | :let &makeprg='g++ -fpermissive -o %< % -I'.s:pl_abs_files_dir.' <args>' | :make!
-command -nargs=? MakeLatex :w | call CompileLatexFile(expand("%:r"))
-command -nargs=? MakeTcl :w | :!tclsh %
-command -nargs=? MakeMarkdown :w | :silent exe "!multimarkdown % -o %:p:r.html"
-command -nargs=? MakePlantUML :w | :silent !plantuml.jar %
-command -nargs=? MakePy :w | :silent !start cmd /c % & pause
-command -nargs=? MakeDebugPy :w | :silent !start python -u -m pdb %
-command -nargs=? MakeDisassemblePy :w | :!python -m dis %
 
 
 " Switch syntax highlighting on, when the terminal has colors
 "
 " Setting syntax on has to come after all the user-defined commands 
-" definitions. Can't place along with th configuring of the other Vim
+" definitions. Can't place along with the configuring of other Vim
 " options upfront because it doesn't work - need to figure out why (TODO).
 if &t_Co > 2 || has("gui_running")
   syntax on
