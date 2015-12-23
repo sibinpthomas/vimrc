@@ -298,62 +298,36 @@ autocmd BufEnter *.py nmap g<F5> :MakeDebugPy<CR>
 autocmd BufEnter *.py setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 autocmd BufEnter *.py setlocal foldmethod=indent
 autocmd BufEnter *.c nmap <F9> :Makecompile<CR> :vert topleft cwin<CR> :vert resize 50<CR>
-autocmd BufEnter *.c nmap <F5> :Makexec<CR> 
-                              \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                              \    :!%:p:r.exe<CR>
-                              \:else<CR>
-                              \    :vert topleft cwin<CR>
-                              \    :vert resize 50<CR>
-                              \:endif<CR> 
-autocmd BufEnter *.c nmap a<F5> :Makexecall<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                               \    :!%:p:r.exe<CR>
-                               \:else<CR>
-                               \    :vert topleft cwin<CR>
-                               \    :vert resize 50<CR>
-                               \:endif<CR> 
-autocmd BufEnter *.c nmap w<F5> :Makexecweak<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                               \    :!%:p:r.exe<CR>
-                               \:else<CR>
-                               \    :vert topleft cwin<CR>
-                               \    :vert resize 50<CR>
-                               \:endif<CR> 
+let s:if_find_exe_s="if findfile(expand(\"%:p:r\").\".exe\", expand(\"%:p:h\")) != \"\" |"
+let s:else_open_qfix_s=
+        \"else |".
+             \"vert topleft cwin |".
+             \"vert resize 50 |".
+        \"endif"
+let g:open_exe_or_qfix_s=
+        \s:if_find_exe_s.
+             \"exe \"!start cmd /c %:p:r.exe & pause\" |".
+        \s:else_open_qfix_s
+let g:open_gdb_or_qfix_s=
+        \s:if_find_exe_s.
+             \"exe \"!start gdb %:p:r.exe\" |".
+        \s:else_open_qfix_s
+autocmd BufEnter *.c nmap <F5>   :silent Makexec<CR>
+                                \:silent execute g:open_exe_or_qfix_s<CR>
+autocmd BufEnter *.c nmap a<F5>  :Makexecall<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR> 
+autocmd BufEnter *.c nmap w<F5>  :Makexecweak<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR>
 autocmd BufEnter *.c nmap wa<F5> :Makexecallweak<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!%:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
-autocmd BufEnter *.c nmap g<F5> :MakexecDebug<CR> 
-                               \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                               \    :silent !start gdb %:p:r.exe<CR>
-                               \:else<CR>
-                               \    :vert topleft cwin<CR>
-                               \    :vert resize 50<CR>
-                               \:endif<CR> 
-autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :silent !start gdb %:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR>
 autocmd BufEnter *.c nmap 99<F5> :Makexec99<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!%:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR>
 autocmd BufEnter *.c nmap 11<F5> :Makexec11<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!%:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR>
+autocmd BufEnter *.c nmap g<F5>  :MakexecDebug<CR> 
+                                \:silent execute g:open_gdb_or_qfix_s<CR>
+autocmd BufEnter *.c nmap gw<F5> :MakexecweakDebug<CR> 
+                                \:silent execute g:open_gdb_or_qfix_s<CR>
 " Auto command to swap the literals on either side of the literal over which the
 " mapped key (below) is pressed.
 autocmd Filetype [^c]* nmap = :let mid_word=expand("<cWORD>")<CR> :exe '.s/\(".\{-}"\\|[^ \t{]\+\)\( *\)\('.mid_word.'\)\( *\)\(".\{-}"\\|[^ \t;]\+\)/\5\2\3\4\1/'<CR> :exe '/'.mid_word<CR> Nh :noh<CR>
@@ -366,19 +340,9 @@ autocmd BufEnter *.h :retab
 autocmd VimEnter *.c call LoadCscopeDB()
 autocmd VimEnter *.h call LoadCscopeDB()
 autocmd BufEnter *.cpp nmap <F5> :MakexecCPP<CR> 
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!%:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
+                                \:silent execute g:open_exe_or_qfix_s<CR>
 autocmd BufEnter *.cpp nmap w<F5> :MakexecCPPweak<CR>
-                                \:if findfile( expand("%:p:r").".exe" ,expand("%:p:h") ) != ""<CR>
-                                \    :!%:p:r.exe<CR>
-                                \:else<CR>
-                                \    :vert topleft cwin<CR>
-                                \    :vert resize 50<CR>
-                                \:endif<CR> 
+                                 \:silent execute g:open_exe_or_qfix_s<CR>
 autocmd BufEnter *.cpp :retab
 autocmd BufEnter COMMIT_EDITMSG setl spell
 autocmd BufEnter COMMIT_EDITMSG setl tw=72 " Because http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
