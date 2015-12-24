@@ -24,6 +24,15 @@ se foldcolumn=3
 se cmdheight=1
 se clipboard=unnamed
 set backspace=indent,eol,start
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
 
 if has('gui_running')
     se guifont=Courier_New:h12:cANSI
@@ -269,6 +278,16 @@ iabbr hte the
 autocmd!
 autocmd GUIEnter * :simalt ~x
 autocmd BufEnter * silent! lcd %:p:h
+" When editing a file, always jump to the last known cursor position.
+" Don't do it when the position is invalid or when inside an event handler
+" (happens when dropping a file on gvim).
+" Also don't do it when the mark is in the first line, that is the default
+" position when opening a file.
+" - Bram Moolenaar
+autocmd BufReadPost *
+  \ if line("'\"") > 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
 autocmd BufEnter *.86S se filetype=asm
 autocmd BufEnter *.armS se filetype=asm
 autocmd BufEnter * syntax keyword Type api_result_e API_RESULT API_SUCCESS API_FAILURE API_ON API_OFF API_TRUE API_FALSE
@@ -497,12 +516,14 @@ command ExploreOSAL :exe "tabe ".s:osal_files_dir
 
 
 " Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
 "
 " Setting syntax on has to come after all the user-defined commands 
 " definitions. Can't place along with the configuring of other Vim
 " options upfront because it doesn't work - need to figure out why (TODO).
 if &t_Co > 2 || has("gui_running")
   syntax on
+  set hlsearch
 endif
 
 " ----------------------------------------------------------------------------
