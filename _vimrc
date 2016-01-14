@@ -24,10 +24,10 @@ se foldcolumn=3
 se cmdheight=1
 se clipboard=unnamed
 set backspace=indent,eol,start
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
+set history=50  " keep 50 lines of command line history
+set ruler       " show the cursor position all the time
+set showcmd     " display incomplete commands
+set incsearch   " do incremental searching
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
@@ -213,8 +213,8 @@ let s:osal_src_files=s:osal_files_src_dir.'pltfm_auxiliary.c'
 let s:osal_platform_dir=s:osal_files_dir.'cygwin\'
 let s:osal_platform_inc_dir=s:osal_platform_dir.'inc\'
 
-let s:pl_os_abst_hdr=s:osal_platform_inc_dir.'os_abstraction.h'
-nmap opl :exe 'tabe '.s:pl_os_abst_hdr<CR>
+let g:pl_os_abst_hdr=s:osal_platform_inc_dir.'os_abstraction.h'
+nmap opl :exe 'tabe '.g:pl_os_abst_hdr<CR>
 
 
 " Cscope related mappings
@@ -270,6 +270,7 @@ cabbr tcs tabnew \| :cs find 7
 " saves time for me
 iabbr pri printf("");
 iabbr hte the
+iabbr teh the
 
 
 " ----------------------------------------------------------------------------
