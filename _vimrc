@@ -785,6 +785,20 @@ onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
 onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
 
 
+" Function to add provided number to the below defined global variable.
+" From - http://vim.wikia.com/wiki/Sum_numbers
+" Usage :
+" :let g:S=0
+" :%s/pattern\zs\(\d\+\)\ze/\=Sum(submatch(1))/g
+" :echo g:S
+"----------------------------------------------------------------------
+let g:S = 0  " Make sure to reset this variable before using the Sum() function
+function! Sum(number)
+  let g:S = g:S + a:number
+  return a:number
+endfunction
+
+
 " ----------------------------------------------------------------------------
 "  Plugin Configuration
 " ----------------------------------------------------------------------------
