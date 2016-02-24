@@ -400,27 +400,27 @@ let s:inp_cfile_inc_dir_s="\\ -o\\ %<\\ %\\ ".s:osal_src_files."\\ ".s:logger_sr
             \."\\ -I".s:osal_files_inc_dir." \\ -I".s:osal_platform_inc_dir." \\ -I".s:logger_inc_dir
 let s:inp_all_files_s="\\ -o\\ %<\\ *.c"
 
-" Save file | Delete exe | Set makeprg to GCC
-let s:sdsm_gcc=s:save_cfile_del_exe_s.' | '.s:set_makeprg_gcc_s
+" Save C file | Delete exe | Set makeprg to GCC
+let s:scdesm_gcc=s:save_cfile_del_exe_s.' | '.s:set_makeprg_gcc_s
 
 let s:makecompile_full_s="w | ".s:set_makeprg_gcc_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
 
-let     s:makexec_full_s=s:sdsm_gcc.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec_weak_s=s:sdsm_gcc.s:inp_cfile_inc_dir_s
-let s:makexec_dbg_full_s=s:sdsm_gcc.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec_dbg_weak_s=s:sdsm_gcc.s:debug_flags_s.s:inp_cfile_inc_dir_s
-let s:makexec_all_full_s=s:sdsm_gcc.s:comp_flags_full_s.s:inp_all_files_s
-let s:makexec_all_weak_s=s:sdsm_gcc.s:inp_all_files_s
+let     s:makexec_full_s=s:scdesm_gcc.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec_weak_s=s:scdesm_gcc.s:inp_cfile_inc_dir_s
+let s:makexec_dbg_full_s=s:scdesm_gcc.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec_dbg_weak_s=s:scdesm_gcc.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec_all_full_s=s:scdesm_gcc.s:comp_flags_full_s.s:inp_all_files_s
+let s:makexec_all_weak_s=s:scdesm_gcc.s:inp_all_files_s
 
-let     s:makexec99_full_s=s:sdsm_gcc.s:c99_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec99_weak_s=s:sdsm_gcc.s:c99_flags_s.s:inp_cfile_inc_dir_s
-let s:makexec99_dbg_full_s=s:sdsm_gcc.s:c99_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec99_dbg_weak_s=s:sdsm_gcc.s:c99_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let     s:makexec99_full_s=s:scdesm_gcc.s:c99_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec99_weak_s=s:scdesm_gcc.s:c99_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec99_dbg_full_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec99_dbg_weak_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
 
-let     s:makexec11_full_s=s:sdsm_gcc.s:c11_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec11_weak_s=s:sdsm_gcc.s:c11_flags_s.s:inp_cfile_inc_dir_s
-let s:makexec11_dbg_full_s=s:sdsm_gcc.s:c11_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec11_dbg_weak_s=s:sdsm_gcc.s:c11_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let     s:makexec11_full_s=s:scdesm_gcc.s:c11_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let     s:makexec11_weak_s=s:scdesm_gcc.s:c11_flags_s.s:inp_cfile_inc_dir_s
+let s:makexec11_dbg_full_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makexec11_dbg_weak_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
 
 let s:call_make_s="make!"
 
@@ -442,9 +442,25 @@ command -nargs=? Makexecweak11 :exe s:makexec11_weak_s.' '.<q-args>.' | '.s:call
 command -nargs=? MakexecDebug11 :exe s:makexec11_dbg_full_s.' '.<q-args>.' | '.s:call_make_s
 command -nargs=? MakexecweakDebug11 :exe s:makexec11_dbg_weak_s.' '.<q-args>.' | '.s:call_make_s
 
-command Makepreprocess :w | :silent exe "!gcc -E % > %:p:r.prepro.c -I".s:osal_files_dir | :tabe %:p:r.prepro.c
-command Makeassemblygcc :w | :silent exe "!gcc -o %<.86S -S % -I".s:osal_files_dir | :tabe %:p:r.86S
-command Makeassemblyarmcc :w | :silent exe "!armcc -o %<.armS -S % -I".s:osal_files_dir | :tabe %:p:r.armS
+" Save C file | Delete preprocessed file | Set makeprg to GCC
+let s:set_makeprg_armcc_s="set makeprg=armcc"
+let s:save_cfile_del_preproc_s="w | silent exe \"!rm -f %:p:r.prepro.c\""
+let s:save_cfile_del_x86asm_s="w | silent exe \"!rm -f %:p:r.86S\""
+let s:save_cfile_del_armasm_s="w | silent exe \"!rm -f %:p:r.armS\""
+let s:preproc_flags_s="\\ -E\\ %\\ -o\\ %:p:r.prepro.c"
+let s:x86asm_flags_s="\\ -o\\ %<.86S\\ -S\\ %"
+let s:armasm_flags_s="\\ -o\\ %<.armS\\ -S\\ %"
+let s:inc_dir_s="\\ -I".s:osal_files_inc_dir." \\ -I".s:osal_platform_inc_dir." \\ -I".s:logger_inc_dir
+let s:open_prepro_s="silent exe \"tabe\\ %:p:r.prepro.c\""
+let s:open_x86asm_s="silent exe \"tabe\\ %:p:r.86S\""
+let s:open_armasm_s="silent exe \"tabe\\ %:p:r.armS\""
+let       s:makepreproc_s=s:save_cfile_del_preproc_s.' | '.s:set_makeprg_gcc_s.s:preproc_flags_s.s:inc_dir_s
+let   s:makeassemblygcc_s=s:save_cfile_del_x86asm_s.' | '.s:set_makeprg_gcc_s.s:x86asm_flags_s.s:inc_dir_s
+let s:makeassemblyarmcc_s=s:save_cfile_del_armasm_s.' | '.s:set_makeprg_armcc_s.s:armasm_flags_s.s:inc_dir_s
+
+command Makepreprocess :exe s:makepreproc_s.' '.<q-args>.' | '.s:call_make_s.' | '.s:open_prepro_s
+command Makeassemblygcc :exe s:makeassemblygcc_s.' '.<q-args>.' | '.s:call_make_s.' | '.s:open_x86asm_s
+command Makeassemblyarmcc :exe s:makeassemblyarmcc_s.' '.<q-args>.' | '.s:call_make_s.' | '.s:open_armasm_s
 
 " C++ Programming related
 "------------------------
