@@ -213,6 +213,9 @@ let s:osal_src_files=s:osal_files_src_dir.'pltfm_auxiliary.c'
 let s:osal_platform_dir=s:osal_files_dir.'cygwin\'
 let s:osal_platform_inc_dir=s:osal_platform_dir.'inc\'
 
+let s:null_os_platform_dir=s:osal_files_dir.'null_os\'
+let s:null_os_platform_inc_dir=s:null_os_platform_dir.'inc\'
+
 let g:pl_os_abst_hdr=s:osal_platform_inc_dir.'os_abstraction.h'
 nmap opl :exe 'tabe '.g:pl_os_abst_hdr<CR>
 
@@ -456,7 +459,8 @@ let s:open_x86asm_s="silent exe \"tabe\\ %:p:r.86S\""
 let s:open_armasm_s="silent exe \"tabe\\ %:p:r.armS\""
 let       s:makepreproc_s=s:save_cfile_del_preproc_s.' | '.s:set_makeprg_gcc_s.s:preproc_flags_s.s:inc_dir_s
 let   s:makeassemblygcc_s=s:save_cfile_del_x86asm_s.' | '.s:set_makeprg_gcc_s.s:x86asm_flags_s.s:inc_dir_s
-let s:makeassemblyarmcc_s=s:save_cfile_del_armasm_s.' | '.s:set_makeprg_armcc_s.s:armasm_flags_s.s:inc_dir_s
+let s:null_inc_dir_s="\\ -I".s:osal_files_inc_dir." \\ -I".s:null_os_platform_inc_dir." \\ -I".s:logger_inc_dir
+let s:makeassemblyarmcc_s=s:save_cfile_del_armasm_s.' | '.s:set_makeprg_armcc_s.s:armasm_flags_s.s:null_inc_dir_s
 
 command Makepreprocess :exe s:makepreproc_s.' '.<q-args>.' | '.s:call_make_s.' | '.s:open_prepro_s
 command Makeassemblygcc :exe s:makeassemblygcc_s.' '.<q-args>.' | '.s:call_make_s.' | '.s:open_x86asm_s
