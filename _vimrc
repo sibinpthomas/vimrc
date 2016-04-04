@@ -162,6 +162,8 @@ endif
 " ----------------------------------------------------------------------------
 " Key mappings.
 " ----------------------------------------------------------------------------
+let g:lasttab = 1
+nmap <Leader>t :exe "tabn ".g:lasttab<CR>
 amenu icon=$VIM/Compile.bmp ToolBar.Compile <F5><CR>
 amenu icon=$VIM/WeakCompile.bmp ToolBar.WeakCompile w<F5><CR>
 nmap gF c :tabe <cfile><CR>
@@ -282,6 +284,7 @@ iabbr teh the
 autocmd!
 autocmd GUIEnter * :simalt ~x
 autocmd BufEnter * silent! lcd %:p:h
+autocmd TabLeave * let g:lasttab = tabpagenr()
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
 " (happens when dropping a file on gvim).
