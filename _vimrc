@@ -403,6 +403,11 @@ let s:logger_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\logger\'
 let s:logger_inc_dir=s:logger_dir.'inc\'
 let s:logger_src_file=s:logger_dir.'src\logger.c'
 
+let s:preproc_s="\\ -DLOGGER\\ -DLOG_TO_STDOUT\\ -DLOGGER_LEVEL=0"
+let s:all_inc_dir_s="\\ -I".s:osal_files_inc_dir." \\ -I".s:osal_platform_inc_dir." \\ -I".s:logger_inc_dir
+let s:inp_cfile_s="\\ -o\\ %<\\ %\\ ".s:osal_src_files."\\ ".s:logger_src_file
+let s:inp_cfile_preproc_inc_dir_s=s:inp_cfile_s.s:preproc_s.s:all_inc_dir_s
+
 let s:inp_cfile_inc_dir_s="\\ -o\\ %<\\ %\\ ".s:osal_src_files."\\ ".s:logger_src_file
             \."\\ -I".s:osal_files_inc_dir." \\ -I".s:osal_platform_inc_dir." \\ -I".s:logger_inc_dir
 let s:inp_all_files_s="\\ -o\\ %<\\ *.c"
@@ -410,24 +415,24 @@ let s:inp_all_files_s="\\ -o\\ %<\\ *.c"
 " Save C file | Delete exe | Set makeprg to GCC
 let s:scdesm_gcc=s:save_cfile_del_exe_s.' | '.s:set_makeprg_gcc_s
 
-let s:makecompile_full_s="w | ".s:set_makeprg_gcc_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
+let s:makecompile_full_s="w | ".s:set_makeprg_gcc_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
 
-let     s:makexec_full_s=s:scdesm_gcc.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec_weak_s=s:scdesm_gcc.s:inp_cfile_inc_dir_s
-let s:makexec_dbg_full_s=s:scdesm_gcc.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec_dbg_weak_s=s:scdesm_gcc.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let     s:makexec_full_s=s:scdesm_gcc.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let     s:makexec_weak_s=s:scdesm_gcc.s:inp_cfile_preproc_inc_dir_s
+let s:makexec_dbg_full_s=s:scdesm_gcc.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let s:makexec_dbg_weak_s=s:scdesm_gcc.s:debug_flags_s.s:inp_cfile_preproc_inc_dir_s
 let s:makexec_all_full_s=s:scdesm_gcc.s:comp_flags_full_s.s:inp_all_files_s
 let s:makexec_all_weak_s=s:scdesm_gcc.s:inp_all_files_s
 
-let     s:makexec99_full_s=s:scdesm_gcc.s:c99_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec99_weak_s=s:scdesm_gcc.s:c99_flags_s.s:inp_cfile_inc_dir_s
-let s:makexec99_dbg_full_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec99_dbg_weak_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let     s:makexec99_full_s=s:scdesm_gcc.s:c99_flags_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let     s:makexec99_weak_s=s:scdesm_gcc.s:c99_flags_s.s:inp_cfile_preproc_inc_dir_s
+let s:makexec99_dbg_full_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let s:makexec99_dbg_weak_s=s:scdesm_gcc.s:c99_flags_s.s:debug_flags_s.s:inp_cfile_preproc_inc_dir_s
 
-let     s:makexec11_full_s=s:scdesm_gcc.s:c11_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let     s:makexec11_weak_s=s:scdesm_gcc.s:c11_flags_s.s:inp_cfile_inc_dir_s
-let s:makexec11_dbg_full_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_inc_dir_s
-let s:makexec11_dbg_weak_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:inp_cfile_inc_dir_s
+let     s:makexec11_full_s=s:scdesm_gcc.s:c11_flags_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let     s:makexec11_weak_s=s:scdesm_gcc.s:c11_flags_s.s:inp_cfile_preproc_inc_dir_s
+let s:makexec11_dbg_full_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:comp_flags_full_s.s:inp_cfile_preproc_inc_dir_s
+let s:makexec11_dbg_weak_s=s:scdesm_gcc.s:c11_flags_s.s:debug_flags_s.s:inp_cfile_preproc_inc_dir_s
 
 let s:call_make_s="make!"
 
