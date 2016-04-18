@@ -300,8 +300,9 @@ autocmd BufEnter *.armS se filetype=asm
 autocmd BufEnter * syntax keyword Type api_result_e API_RESULT API_SUCCESS API_FAILURE API_ON API_OFF API_TRUE API_FALSE
 autocmd BufEnter * syntax keyword Type DECL_REGISTER DECL_CONST DECL_STATIC
 autocmd BufEnter * syntax keyword Type CHAR UCHAR INT8 UINT8 INT16 UINT16 INT32 UINT32 INT64 UINT64
-autocmd BufEnter * syntax keyword Type BOOLEAN UINT16_F INT16_F UINTMAX INTMAX
-autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v_u16 v_s16 v_u32 v_s32 v_u64 v_s64 SOCKET 
+autocmd BufEnter * syntax keyword Type BOOLEAN BOOL BOOL_T bool UINT16_F INT16_F UINTMAX INTMAX
+autocmd BufEnter * syntax keyword Type u8 s8 u16 s16 u32 s32 u64 s64 v_u8 v_s8 v_u16 v_s16 v_u32 v_s32 v_u64 v_s64
+autocmd BufEnter * syntax keyword Type SOCKET SOCKET_HDL CBUF_HDL IMCH_HDL
 autocmd BufEnter * syntax keyword Type sc_bv sc_logic sc_lv sc_int sc_uint sc_bigint sc_biguint
 autocmd BufEnter * syntax keyword Special SC_MODULE SC_CTOR
 autocmd BufEnter *.txt,*.md setl tw=0
