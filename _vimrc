@@ -138,6 +138,7 @@ Plugin 'aklt/plantuml-syntax'
 Plugin 'AndrewRadev/linediff.vim'
 
 " Project workspace like feel
+let g:proj_window_width = 30
 Plugin 'vim-scripts/project.tar.gz'
 
 " Files which are necessary for my workflow such as -
