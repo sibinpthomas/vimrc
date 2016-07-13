@@ -208,7 +208,7 @@ nmap ovim :tabe $VIM\_vimrc<CR>
 nmap osal :ExploreOSAL<CR>
 
 " Open OS Abstraction header file in new Tab.
-let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\osal\'
+let s:osal_files_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\platforms\'
 let s:osal_files_inc_dir=s:osal_files_dir.'inc\'
 let s:osal_files_src_dir=s:osal_files_dir.'src\'
 let s:osal_src_files=s:osal_files_src_dir.'pltfm_auxiliary.c'
@@ -400,7 +400,7 @@ let s:c99_flags_s="\\ -std=c99"
 let s:c11_flags_s="\\ -std=c11"
 
 " Open OS Abstraction header file in new Tab.
-let s:logger_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\logger\'
+let s:logger_dir=s:vim_cstmztn_files_dir.'bundle\vim_personal_xtra\utils\logger\'
 let s:logger_inc_dir=s:logger_dir.'inc\'
 let s:logger_src_file=s:logger_dir.'src\logger.c'
 
