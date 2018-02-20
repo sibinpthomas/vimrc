@@ -141,6 +141,30 @@ Plugin 'AndrewRadev/linediff.vim'
 let g:proj_window_width = 30
 Plugin 'vim-scripts/project.tar.gz'
 
+" This script implements transparent editing of gpg encrypted files
+"" Tell the GnuPG plugin Symmetric encryption is desired.
+"" (Uses password as opposed to public-private key)
+let g:GPGPreferSymmetric=1
+
+augroup GnuPGExtra
+"" Set extra file options.
+    autocmd BufReadCmd,FileReadCmd *.\(gpg\|asc\|pgp\) call SetGPGOptions()
+"" Automatically close unmodified files after inactivity.
+    autocmd CursorHold *.\(gpg\|asc\|pgp\) quit
+augroup END
+
+function SetGPGOptions()
+"" Set updatetime to 2 minutes.
+    set updatetime=120000
+"" Fold at markers.
+    set foldmethod=marker
+"" Automatically close all folds.
+    set foldclose=all
+"" Only open folds with insert commands.
+    set foldopen=insert
+endfunction
+Plugin 'jamessan/vim-gnupg'
+
 " Files which are necessary for my workflow such as -
 "        - Man pages
 "        - OS abstraction layer files
