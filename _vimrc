@@ -139,6 +139,7 @@ Plugin 'AndrewRadev/linediff.vim'
 
 " Project workspace like feel
 let g:proj_window_width = 30
+let g:proj_flags = "imstv"
 Plugin 'vim-scripts/project.tar.gz'
 
 " This script implements transparent editing of gpg encrypted files
