@@ -1,0 +1,16 @@
+* Installed DroidVim. Purchased git and curl on app.
+* Simplified vimrc for Android. Modified it to handle Linux path separators and Android folder structure (Vim_Files).
+* Created Vim_Files folder in top level phone memory.
+* Downloaded and installed plugins via Vundle.
+* DroidVim doesn't support gpg.
+* Installed Termux app.
+* In Termux installed packages gpg and other relevant ones.
+* Execute 'termux-setup-storage'. See -
+    https://termux.com/storage.html
+    https://android.stackexchange.com/a/166637
+* Used same vimrc as DroidVim with path to Vim_Files changed since Termux sees the directory structure differently (see links above).
+* Everything worked smoothly from here on. Plugins were recognized by Termux Vim. The GPG plugin worked, and on creation of a .gpg file a widget to ask for password popped up...Success!
+
+TODO -
+* See how vim_backup settings should be handled with GPG usage.
+* Need to play around with vim textwidth setting to see what is right for phone screen.
